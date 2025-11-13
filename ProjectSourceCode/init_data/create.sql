@@ -1,16 +1,14 @@
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    user_name VARCHAR(50) NOT NULL UNIQUE,
+    username VARCHAR(50) NOT NULL UNIQUE,  -- Changed from user_name to username
     password VARCHAR(255) NOT NULL
 );
-
 
 CREATE TABLE movies (
     movie_id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     release_year INT
 );
-
 
 CREATE TABLE reviews (
     review_id SERIAL PRIMARY KEY,
