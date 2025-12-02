@@ -27,7 +27,7 @@ const hbs = handlebars.create({
 
 // database configuration
 const dbConfig = {
-  host: "db", // the database server
+  host: process.env.POSTGRES_HOST || "db", // the database server
   port: 5432, // the database port
   database: process.env.POSTGRES_DB, // the database name
   user: process.env.POSTGRES_USER, // the user account to connect with
@@ -94,9 +94,15 @@ app.use(bodyParser.json()); // specify the usage of JSON for parsing request bod
 // initialize session variables
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret:
+      process.env.SESSION_SECRET || "fallback-secret-key-change-in-production",
     saveUninitialized: false,
     resave: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24,
+    },
   })
 );
 
@@ -287,7 +293,7 @@ app.get("/discover", async (req, res) => {
       return res.render("discover", {
         username: req.session.user?.username,
         results: [],
-        message: "OMDB API key not configured."
+        message: "OMDB API key not configured.",
       });
     }
 
@@ -297,26 +303,27 @@ app.get("/discover", async (req, res) => {
       params: {
         apikey: apiKey,
         s: searchQuery, // <-- search for multiple results
-      }
+      },
     });
 
     if (response.data.Response === "False") {
       return res.render("discover", {
         username: req.session.user?.username,
         results: [],
-        message: "No movies found."
+        message: "No movies found.",
       });
     }
 
     const movies = response.data.Search || [];
 
     // Map to your Handlebars structure
-    const results = movies.map(movie => ({
+    const results = movies.map((movie) => ({
       Title: movie.Title,
       Year: movie.Year,
-      Poster: movie.Poster !== "N/A" ? movie.Poster : "/images/default-movie.jpg",
+      Poster:
+        movie.Poster !== "N/A" ? movie.Poster : "/images/default-movie.jpg",
       imdbID: movie.imdbID, // keep this for future DB insertion
-      url: `https://www.imdb.com/title/${movie.imdbID}`
+      url: `https://www.imdb.com/title/${movie.imdbID}`,
     }));
 
     res.render("discover", {
@@ -329,7 +336,7 @@ app.get("/discover", async (req, res) => {
     res.render("discover", {
       username: req.session.user?.username,
       results: [],
-      message: "Error loading movies. Try again later."
+      message: "Error loading movies. Try again later.",
     });
   }
 });
@@ -361,7 +368,7 @@ app.get("/reviews/new", (req, res) => {
   res.render("review", {
     username: req.session.user?.username,
     // movie_id,
-    title
+    title,
   });
 });
 
@@ -430,17 +437,16 @@ app.get("/reviews", async (req, res) => {
       username: req.session.user?.username,
       title,
       reviews,
-      message: reviews.length === 0 ?
-        "No reviews yet — be the first to add one!" : null
+      message:
+        reviews.length === 0
+          ? "No reviews yet — be the first to add one!"
+          : null,
     });
-
   } catch (err) {
     console.error("Error fetching reviews:", err.message);
     res.redirect("/discover");
   }
 });
-
-
 
 // Logout route
 app.get("/logout", (req, res) => {
