@@ -25,36 +25,35 @@ const hbs = handlebars.create({
   defaultLayout: false,
 });
 
-// Use DATABASE_URL in production (Render), fall back to local env for Docker/local dev.
-const connectionString =
-  process.env.DATABASE_URL ||
-  `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}` +
-    `@${process.env.POSTGRES_HOST || "db"}:5432/${process.env.POSTGRES_DB}`;
+// Build a connection string.
+// - In production (Render), prefer DATABASE_URL (internal DB URL).
+// - Otherwise, use POSTGRES_* env vars (Render / Docker).
+// - As a last resort, fall back to a local Docker-style default.
+let connectionString = process.env.DATABASE_URL;
 
-console.log("[DEBUG] Full connection string:", connectionString);
-console.log("[DEBUG] DATABASE_URL exists?", !!process.env.DATABASE_URL);
-console.log("[DEBUG] Individual vars:", {
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  db: process.env.POSTGRES_DB,
-});
+if (!connectionString && process.env.POSTGRES_USER) {
+  const host =
+    process.env.POSTGRES_HOST ||
+    (process.env.NODE_ENV === "production" ? "localhost" : "db");
+  const port = process.env.POSTGRES_PORT || 5432;
 
-// Safe debug: show which user/host/db we are using (no password)
-try {
-  const [, rest] = connectionString.split("://");
-  const [userPart, hostAndDb] = rest.split("@");
-  const user = userPart.split(":")[0];
-
-  const [hostPart, dbPart] = hostAndDb.split("/");
-  const host = hostPart.split(":")[0];
-  const database = dbPart;
-
-  console.log("[DB DEBUG] Using connection:", { user, host, database });
-} catch (e) {
-  console.log("[DB DEBUG] Could not parse connectionString:", e.message);
+  connectionString =
+    `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}` +
+    `@${host}:${port}/${process.env.POSTGRES_DB}`;
 }
 
-const db = pgp(connectionString);
+if (!connectionString) {
+  // Final fallback (mainly for local dev / Docker)
+  connectionString = "postgres://postgres:postgres@db:5432/postgres";
+}
+
+const db = pgp({
+  connectionString,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
+});
 
 // test your database
 db.connect()
@@ -99,8 +98,9 @@ db.connect()
     obj.done();
   })
   .catch((error) => {
-    console.log("ERROR:", error.message || error);
+    console.log("ERROR connecting to database:", error.message || error);
   });
+
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -305,7 +305,7 @@ app.use(auth);
 // PROTECTED ROUTES (Authentication required)
 // ============================================
 
-// Discover page - Shows events from Ticketmaster
+// Discover page - Shows events from OMDB
 app.get("/discover", async (req, res) => {
   try {
     const apiKey = process.env.API_KEY;
@@ -360,6 +360,7 @@ app.get("/discover", async (req, res) => {
     });
   }
 });
+
 // Add movie to DB
 app.post("/movies/add", async (req, res) => {
   try {
@@ -387,7 +388,6 @@ app.get("/reviews/new", (req, res) => {
 
   res.render("review", {
     username: req.session.user?.username,
-    // movie_id,
     title,
   });
 });
@@ -426,6 +426,7 @@ app.post("/reviews/add", async (req, res) => {
     res.redirect("/discover");
   }
 });
+
 // Read reviews for a movie
 app.get("/reviews", async (req, res) => {
   try {
