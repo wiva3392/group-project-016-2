@@ -1,6 +1,7 @@
 {
   "name": "group-project-016-2",
-  "main": "src/index.js",
+  "version": "1.0.0",
+  "main": "index.js",
   "dependencies": {
     "express": "^4.6.1",
     "pg-promise": "^10.11.1",
@@ -20,8 +21,12 @@
   },
   "scripts": {
     "prestart": "npm install",
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "mocha",
-    "testandrun": "npm run prestart && npm run test && npm start"
+    "testandrun": "npm run prestart && npm run test && npm run dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
