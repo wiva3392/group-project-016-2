@@ -31,10 +31,20 @@ const connectionString =
   `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}` +
     `@${process.env.POSTGRES_HOST || "db"}:5432/${process.env.POSTGRES_DB}`;
 
-console.log(
-  "DB CONNECTION STRING USER:",
-  connectionString.split("//")[1].split(":")[0]
-); // for debugging
+// Safe debug: show which user/host/db we are using (no password)
+try {
+  const [, rest] = connectionString.split("://");
+  const [userPart, hostAndDb] = rest.split("@");
+  const user = userPart.split(":")[0];
+
+  const [hostPart, dbPart] = hostAndDb.split("/");
+  const host = hostPart.split(":")[0];
+  const database = dbPart;
+
+  console.log("[DB DEBUG] Using connection:", { user, host, database });
+} catch (e) {
+  console.log("[DB DEBUG] Could not parse connectionString:", e.message);
+}
 
 const db = pgp(connectionString);
 
