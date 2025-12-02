@@ -1,41 +1,88 @@
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reviews - Movie Meter</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-
-<body class="bg-light">
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">🎬 Movie Meter</a>
-            <span class="text-light">Welcome, {{username}}!</span>
-        </div>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family:
+      'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
+      linear-gradient(135deg, #4b6cb7 0%, #182848 100%); min-height: 100vh;
+      padding-bottom: 40px; } .navbar { background: rgba(255, 255, 255, 0.95);
+      padding: 20px 0; box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1); margin-bottom:
+      30px; } .navbar-content { max-width: 1000px; margin: 0 auto; padding: 0
+      20px; display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 15px; } .brand { font-size: 1.8rem; font-weight:
+      700; background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; text-decoration: none; } .welcome-text { color:
+      #333; font-weight: 500; } .container { max-width: 1000px; margin: 0 auto;
+      padding: 0 20px; } h2 { color: white; font-size: 2.5rem; margin-bottom:
+      30px; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+      .movie-title { background: rgba(255, 255, 255, 0.1); color: white;
+      padding: 10px 20px; border-radius: 10px; display: inline-block;
+      margin-bottom: 30px; font-size: 1.3rem; } .alert { background: rgba(255,
+      255, 255, 0.95); padding: 20px; border-radius: 15px; margin-bottom: 20px;
+      color: #333; text-align: center; font-size: 1.1rem; box-shadow: 0 5px 20px
+      rgba(0, 0, 0, 0.2); } .review-card { background: rgba(255, 255, 255,
+      0.95); border-radius: 15px; padding: 25px; margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease-out; } @keyframes fadeInUp { from { opacity:
+      0; transform: translateY(20px); } to { opacity: 1; transform:
+      translateY(0); } } .review-card:hover { transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); } .rating { display:
+      inline-block; background: linear-gradient(135deg, #f093fb 0%, #f5576c
+      100%); color: white; padding: 8px 16px; border-radius: 20px; font-weight:
+      700; font-size: 1.1rem; margin-bottom: 15px; } .review-text { color: #333;
+      font-size: 1.05rem; line-height: 1.6; margin: 15px 0; padding: 15px;
+      background: #f8f8f8; border-radius: 10px; border-left: 4px solid #4b6cb7;
+      } .review-author { color: #666; font-size: 0.95rem; font-style: italic;
+      margin-top: 10px; } .btn-back { display: inline-block; padding: 14px 30px;
+      background: rgba(255, 255, 255, 0.95); color: #4b6cb7; border: none;
+      border-radius: 10px; font-size: 1rem; font-weight: 600; text-decoration:
+      none; transition: all 0.3s ease; margin-top: 20px; box-shadow: 0 5px 20px
+      rgba(0, 0, 0, 0.2); } .btn-back:hover { transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); background: white; }
+      .no-reviews { background: rgba(255, 255, 255, 0.95); padding: 40px;
+      border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,
+      0, 0, 0.2); } .no-reviews-icon { font-size: 4rem; margin-bottom: 20px; }
+      .no-reviews-text { color: #666; font-size: 1.2rem; } @media (max-width:
+      768px) { h2 { font-size: 2rem; } .review-card { padding: 20px; } }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-content">
+        <a href="/" class="brand">🎬 Movie Meter</a>
+        <span class="welcome-text">Welcome, {{username}}!</span>
+      </div>
     </nav>
 
-    <div class="container mt-4">
-        <h2>Reviews for {{title}}</h2>
+    <div class="container">
+      <h2>📖 Movie Reviews</h2>
+      <div style="text-align: center;">
+        <div class="movie-title">{{title}}</div>
+      </div>
 
-        {{#if message}}
-        <p class="alert alert-info">{{message}}</p>
-        {{/if}}
-
-        {{#if reviews.length}}
-        {{#each reviews}}
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5>⭐ Rating: {{rating}} / 10</h5>
-                <p>{{review_text}}</p>
-                <small class="text-muted">By: {{username}}</small>
-            </div>
+      {{#if message}}
+        <div class="no-reviews">
+          <div class="no-reviews-icon">🎬</div>
+          <p class="no-reviews-text">{{message}}</p>
         </div>
+      {{/if}}
+
+      {{#if reviews.length}}
+        {{#each reviews}}
+          <div class="review-card">
+            <div class="rating">⭐ {{rating}} / 10</div>
+            <div class="review-text">{{review_text}}</div>
+            <div class="review-author">— Written by {{username}}</div>
+          </div>
         {{/each}}
-        {{/if}}
+      {{/if}}
 
-        <a href="/discover" class="btn btn-secondary">Back</a>
+      <div style="text-align: center;">
+        <a href="/discover" class="btn-back">← Back to Discover</a>
+      </div>
     </div>
-
-</body>
-
+  </body>
 </html>

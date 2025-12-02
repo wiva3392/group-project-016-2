@@ -1,65 +1,321 @@
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Discover - Movie Meter</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px 0;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .navbar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .brand {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .welcome-text {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-logout:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-form {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+    }
+
+    .search-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 15px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-search {
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-search:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .alert {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border-left: 4px solid #ffa500;
+      color: #333;
+    }
+
+    .alert-info {
+      border-left-color: #3498db;
+    }
+
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .movie-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .movie-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .movie-poster {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .movie-body {
+      padding: 20px;
+    }
+
+    .movie-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .movie-year {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+
+    .movie-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: white;
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .movies-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-group {
+        flex-direction: column;
+      }
+
+      .search-input {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
 <body>
-  <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">🎬 Movie Meter</a>
-      <div class="d-flex">
-        <span class="text-light me-3">Welcome, {{username}}!</span>
-        <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="/" class="brand">🎬 Movie Meter</a>
+      <div class="user-info">
+        <span class="welcome-text">Welcome, {{username}}!</span>
+        <a href="/logout" class="btn-logout">Logout</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mt-4">
+  <div class="container">
     <h1>Discover Movies</h1>
 
-    <!-- Search Form -->
-    <form action="/discover" method="GET" class="mb-4">
-      <div class="input-group">
-        <input type="text" name="title" class="form-control" placeholder="Search Movies..." required />
-        <button class="btn btn-primary" type="submit">Search</button>
-      </div>
-    </form>
+    <div class="search-form">
+      <form action="/discover" method="GET">
+        <div class="search-group">
+          <input type="text" name="title" class="search-input" placeholder="Search for movies..." required />
+          <button class="btn-search" type="submit">🔍 Search</button>
+        </div>
+      </form>
+    </div>
 
     {{#if message}}
-    <div class="alert alert-warning" role="alert">
+    <div class="alert">
       {{message}}
     </div>
     {{/if}}
 
     {{#if results}}
-    <div class="row">
+    <div class="movies-grid">
       {{#each results}}
-      <div class="col-md-4 mb-4">
-        <div class="card h-100">
-          <img src="{{#if Poster}}{{Poster}}{{else}}/images/default-poster.jpg{{/if}}" class="card-img-top"
-            alt="{{Title}}" style="height: 350px; object-fit: cover;" />
-          <div class="card-body">
-            <h5 class="card-title">{{Title}}</h5>
-            <p class="card-text"><strong>Year:</strong> {{Year}}</p>
-
-            <!-- Add Movie Button -->
-            <form action="/movies/add" method="POST" class="d-inline">
+      <div class="movie-card">
+        <img src="{{#if Poster}}{{Poster}}{{else}}/images/default-poster.jpg{{/if}}" class="movie-poster" alt="{{Title}}" />
+        <div class="movie-body">
+          <h3 class="movie-title">{{Title}}</h3>
+          <p class="movie-year"><strong>Year:</strong> {{Year}}</p>
+          
+          <div class="movie-actions">
+            <form action="/movies/add" method="POST" style="display: inline-block;">
               <input type="hidden" name="title" value="{{Title}}">
               <input type="hidden" name="year" value="{{Year}}">
-              <button type="submit" class="btn btn-success btn-sm">Add Movie</button>
+              <button type="submit" class="btn btn-success">➕ Add Movie</button>
             </form>
-            <!-- Add Review Button -->
-            <form action="/reviews/new" method="GET" class="d-inline">
+            
+            <form action="/reviews/new" method="GET" style="display: inline-block;">
               <input type="hidden" name="title" value="{{Title}}">
-              <button type="submit" class="btn btn-warning btn-sm">Add Review</button>
+              <button type="submit" class="btn btn-warning">✍️ Review</button>
             </form>
 
-            <!-- Read Reviews Button -->
-            <a href="/reviews?title={{Title}}" class="btn btn-secondary btn-sm">Read Reviews</a>
+            <a href="/reviews?title={{Title}}" class="btn btn-secondary">📖 Reviews</a>
           </div>
         </div>
       </div>
@@ -67,10 +323,9 @@
     </div>
     {{else}}
     <div class="alert alert-info">
-      No movies available at the moment.
+      🎬 No movies available. Try searching for your favorite films!
     </div>
     {{/if}}
   </div>
 </body>
-
 </html>
