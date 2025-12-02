@@ -20,21 +20,23 @@ const axios = require("axios"); // To make HTTP requests
 // create `ExpressHandlebars` instance and configure the layouts and partials dir.
 const hbs = handlebars.create({
   extname: "hbs",
-  layoutsDir: false, // Disable layouts
+  layoutsDir: false,
   partialsDir: __dirname + "/partials",
-  defaultLayout: false, // Don't use any layout
+  defaultLayout: false,
 });
 
-// database configuration
-const dbConfig = {
-  host: process.env.POSTGRES_HOST || "db",
-  port: 5432,
-  database: process.env.POSTGRES_DB,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-};
+// Use DATABASE_URL in production (Render), fall back to local env for Docker/local dev.
+const connectionString =
+  process.env.DATABASE_URL ||
+  `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}` +
+    `@${process.env.POSTGRES_HOST || "db"}:5432/${process.env.POSTGRES_DB}`;
 
-const db = pgp(dbConfig);
+console.log(
+  "DB CONNECTION STRING USER:",
+  connectionString.split("//")[1].split(":")[0]
+); // for debugging
+
+const db = pgp(connectionString);
 
 // test your database
 db.connect()
