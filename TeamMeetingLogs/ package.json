@@ -1,0 +1,14 @@
+{
+  "name": "group-project-016-2-root",
+  "version": "1.0.0",
+  "description": "Movie Meter - Root package for deployment",
+  "scripts": {
+    "preinstall": "cd ProjectSourceCode && npm install",
+    "start": "cd ProjectSourceCode && npm start",
+    "test": "cd ProjectSourceCode && npm test",
+    "dev": "cd ProjectSourceCode && npm run dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
