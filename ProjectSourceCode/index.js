@@ -59,6 +59,7 @@ db.connect()
         release_year INT
       )
     `);
+
     console.log("Movies table ready");
 
     // Create reviews table
