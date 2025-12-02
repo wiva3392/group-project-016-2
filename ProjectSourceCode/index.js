@@ -41,7 +41,7 @@ db.connect()
   .then(async (obj) => {
     console.log("Database connection successful");
 
-    // Create users table if it doesn't exist
+    // Create users table
     await db.none(`
       CREATE TABLE IF NOT EXISTS users (
         user_id SERIAL PRIMARY KEY,
@@ -51,12 +51,35 @@ db.connect()
     `);
     console.log("Users table ready");
 
+    // Create movies table
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS movies (
+        movie_id SERIAL PRIMARY KEY,
+        title VARCHAR(100) NOT NULL,
+        release_year INT
+      )
+    `);
+    console.log("Movies table ready");
+
+    // Create reviews table
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS reviews (
+        review_id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        movie_id INT NOT NULL,
+        rating INT CHECK (rating BETWEEN 1 AND 10),
+        review_text CHAR(200),
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+        FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE
+      )
+    `);
+    console.log("Reviews table ready");
+
     obj.done();
   })
   .catch((error) => {
     console.log("ERROR:", error.message || error);
   });
-
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -258,39 +281,41 @@ app.use(auth);
 // Discover page - Shows events from Ticketmaster
 app.get("/discover", async (req, res) => {
   try {
-    // Check if API key exists
-    if (!process.env.API_KEY) {
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
       return res.render("discover", {
         username: req.session.user?.username,
         results: [],
-        message: "API key not configured. Please contact administrator.",
+        message: "OMDB API key not configured."
       });
     }
 
-    // Fetch events from Ticketmaster API
-    const response = await axios({
-      url: "https://app.ticketmaster.com/discovery/v2/events.json",
-      method: "GET",
-      dataType: "json",
-      headers: {
-        "Accept-Encoding": "application/json",
-      },
+    const searchQuery = req.query.title || "The Avengers"; // default search
+
+    const response = await axios.get("http://www.omdbapi.com/", {
       params: {
-        apikey: process.env.API_KEY,
-        keyword: "music",
-        size: 12,
-      },
+        apikey: apiKey,
+        s: searchQuery, // <-- search for multiple results
+      }
     });
 
-    const events = response.data._embedded?.events || [];
+    if (response.data.Response === "False") {
+      return res.render("discover", {
+        username: req.session.user?.username,
+        results: [],
+        message: "No movies found."
+      });
+    }
 
-    // Map event data for display
-    const results = events.map((event) => ({
-      name: event.name,
-      image: event.images?.[0]?.url || "/images/default-event.jpg",
-      date: event.dates?.start?.localDate || "Date TBD",
-      time: event.dates?.start?.localTime || "Time TBD",
-      url: event.url,
+    const movies = response.data.Search || [];
+
+    // Map to your Handlebars structure
+    const results = movies.map(movie => ({
+      Title: movie.Title,
+      Year: movie.Year,
+      Poster: movie.Poster !== "N/A" ? movie.Poster : "/images/default-movie.jpg",
+      imdbID: movie.imdbID, // keep this for future DB insertion
+      url: `https://www.imdb.com/title/${movie.imdbID}`
     }));
 
     res.render("discover", {
@@ -298,16 +323,123 @@ app.get("/discover", async (req, res) => {
       results,
       message: null,
     });
-  } catch (error) {
-    console.error("Error fetching events:", error.message);
-
+  } catch (err) {
+    console.error("OMDB API Error:", err.message);
     res.render("discover", {
       username: req.session.user?.username,
       results: [],
-      message: "Failed to load events. Please try again later.",
+      message: "Error loading movies. Try again later."
     });
   }
 });
+// Add movie to DB
+app.post("/movies/add", async (req, res) => {
+  try {
+    const { title, year } = req.body;
+
+    // Insert movie into DB, avoid duplicates
+    await db.none(
+      `INSERT INTO movies (title, release_year)
+       VALUES ($1, $2)
+       ON CONFLICT (title) DO NOTHING`,
+      [title, year]
+    );
+
+    console.log(`Movie added: ${title}`);
+    res.redirect("/discover");
+  } catch (err) {
+    console.error("Error adding movie:", err.message);
+    res.redirect("/discover");
+  }
+});
+
+// Show review form
+app.get("/reviews/new", (req, res) => {
+  const { title } = req.query;
+
+  res.render("review", {
+    username: req.session.user?.username,
+    // movie_id,
+    title
+  });
+});
+
+// Save review to DB
+app.post("/reviews/add", async (req, res) => {
+  try {
+    const userId = req.session.user.user_id;
+    const { title, rating, review_text } = req.body;
+
+    // Find movie in DB
+    let movie = await db.oneOrNone(
+      `SELECT movie_id FROM movies WHERE title = $1`,
+      [title]
+    );
+
+    // Insert movie if not exists
+    if (!movie) {
+      movie = await db.one(
+        `INSERT INTO movies (title) VALUES ($1) RETURNING movie_id`,
+        [title]
+      );
+    }
+
+    // Insert review
+    await db.none(
+      `INSERT INTO reviews (user_id, movie_id, rating, review_text)
+       VALUES ($1, $2, $3, $4)`,
+      [userId, movie.movie_id, rating, review_text]
+    );
+
+    console.log(`Review added for ${title}`);
+    res.redirect("/discover");
+  } catch (err) {
+    console.error("Error adding review:", err.message);
+    res.redirect("/discover");
+  }
+});
+// Read reviews for a movie
+app.get("/reviews", async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    if (!title) {
+      return res.redirect("/discover");
+    }
+
+    // Get movie info
+    const movie = await db.oneOrNone(
+      `SELECT movie_id FROM movies WHERE title = $1`,
+      [title]
+    );
+
+    let reviews = [];
+
+    if (movie) {
+      reviews = await db.any(
+        `SELECT r.rating, r.review_text, u.username
+         FROM reviews r
+         JOIN users u ON r.user_id = u.user_id
+         WHERE r.movie_id = $1`,
+        [movie.movie_id]
+      );
+    }
+
+    res.render("read-review", {
+      username: req.session.user?.username,
+      title,
+      reviews,
+      message: reviews.length === 0 ?
+        "No reviews yet — be the first to add one!" : null
+    });
+
+  } catch (err) {
+    console.error("Error fetching reviews:", err.message);
+    res.redirect("/discover");
+  }
+});
+
+
 
 // Logout route
 app.get("/logout", (req, res) => {
