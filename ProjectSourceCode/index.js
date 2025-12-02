@@ -29,6 +29,12 @@ const hbs = handlebars.create({
 // - Prefer DATABASE_URL (Render, or local .env).
 // - Otherwise, build from POSTGRES_* env vars.
 // - If neither is set, throw an error instead of silently using 'db'.
+console.log("[ENV DEBUG] DATABASE_URL =", process.env.DATABASE_URL);
+console.log("[ENV DEBUG] POSTGRES_USER =", process.env.POSTGRES_USER);
+console.log("[ENV DEBUG] POSTGRES_DB =", process.env.POSTGRES_DB);
+console.log("[ENV DEBUG] POSTGRES_HOST =", process.env.POSTGRES_HOST);
+console.log("[ENV DEBUG] All env keys:", Object.keys(process.env));
+
 let connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
