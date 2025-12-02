@@ -31,6 +31,14 @@ const connectionString =
   `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}` +
     `@${process.env.POSTGRES_HOST || "db"}:5432/${process.env.POSTGRES_DB}`;
 
+console.log("[DEBUG] Full connection string:", connectionString);
+console.log("[DEBUG] DATABASE_URL exists?", !!process.env.DATABASE_URL);
+console.log("[DEBUG] Individual vars:", {
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  db: process.env.POSTGRES_DB,
+});
+
 // Safe debug: show which user/host/db we are using (no password)
 try {
   const [, rest] = connectionString.split("://");
