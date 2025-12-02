@@ -25,26 +25,32 @@ const hbs = handlebars.create({
   defaultLayout: false,
 });
 
-// Build a connection string.
-// - In production (Render), prefer DATABASE_URL (internal DB URL).
-// - Otherwise, use POSTGRES_* env vars (Render / Docker).
-// - As a last resort, fall back to a local Docker-style default.
+// Build a connection string:
+// - Prefer DATABASE_URL (Render, or local .env).
+// - Otherwise, build from POSTGRES_* env vars.
+// - If neither is set, throw an error instead of silently using 'db'.
 let connectionString = process.env.DATABASE_URL;
 
-if (!connectionString && process.env.POSTGRES_USER) {
-  const host =
-    process.env.POSTGRES_HOST ||
-    (process.env.NODE_ENV === "production" ? "localhost" : "db");
-  const port = process.env.POSTGRES_PORT || 5432;
+if (!connectionString) {
+  const {
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
+    POSTGRES_DB,
+    POSTGRES_HOST,
+    POSTGRES_PORT,
+  } = process.env;
+
+  if (!POSTGRES_USER || !POSTGRES_PASSWORD || !POSTGRES_DB || !POSTGRES_HOST) {
+    throw new Error(
+      "Database env vars missing. Need POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST or DATABASE_URL."
+    );
+  }
+
+  const port = POSTGRES_PORT || 5432;
 
   connectionString =
-    `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}` +
-    `@${host}:${port}/${process.env.POSTGRES_DB}`;
-}
-
-if (!connectionString) {
-  // Final fallback (mainly for local dev / Docker)
-  connectionString = "postgres://postgres:postgres@db:5432/postgres";
+    `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}` +
+    `@${POSTGRES_HOST}:${port}/${POSTGRES_DB}`;
 }
 
 const db = pgp({
