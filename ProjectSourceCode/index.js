@@ -80,7 +80,7 @@ db.connect()
     await db.none(`
       CREATE TABLE IF NOT EXISTS movies (
         movie_id SERIAL PRIMARY KEY,
-        title VARCHAR(100) NOT NULL,
+        title VARCHAR(100) NOT NULL UNIQUE,
         release_year INT
       )
     `);
