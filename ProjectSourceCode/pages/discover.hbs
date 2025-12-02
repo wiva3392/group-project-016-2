@@ -11,165 +11,222 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #0a0a0a;
       min-height: 100vh;
-      padding-bottom: 40px;
+      color: #fff;
     }
 
+    /* Navbar */
     .navbar {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 20px 0;
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      background: rgba(15, 15, 15, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 16px 0;
       position: sticky;
       top: 0;
       z-index: 1000;
-      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
     }
 
     .navbar-content {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 20px;
     }
 
     .brand {
-      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #58a6ff 0%, #7877c6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-decoration: none;
+      transition: all 0.3s ease;
     }
 
-    .user-info {
+    .brand:hover {
+      transform: scale(1.02);
+    }
+
+    .user-section {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
 
     .welcome-text {
-      color: #333;
+      color: rgba(255, 255, 255, 0.8);
       font-weight: 500;
+      font-size: 0.95rem;
     }
 
     .btn-logout {
       padding: 10px 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
+      background: rgba(88, 166, 255, 0.1);
+      border: 1px solid rgba(88, 166, 255, 0.3);
+      color: #58a6ff;
       border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
-      transition: all 0.3s ease;
-      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .btn-logout:hover {
+      background: rgba(88, 166, 255, 0.2);
+      border-color: #58a6ff;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
     }
 
+    /* Container */
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 48px 32px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 56px;
     }
 
     h1 {
-      color: white;
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      text-align: center;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1.5px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 400;
+    }
+
+    /* Search Section */
+    .search-section {
+      max-width: 800px;
+      margin: 0 auto 48px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .search-form {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      margin-bottom: 30px;
-    }
-
-    .search-group {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .search-input {
       flex: 1;
-      min-width: 250px;
-      padding: 15px 20px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
+      padding: 16px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
       font-size: 1rem;
-      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
     }
 
     .search-input:focus {
       outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      border-color: #58a6ff;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(88, 166, 255, 0.15);
     }
 
     .btn-search {
-      padding: 15px 30px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #58a6ff 0%, #7877c6 100%);
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 16px rgba(88, 166, 255, 0.3);
+      white-space: nowrap;
     }
 
     .btn-search:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 8px 24px rgba(88, 166, 255, 0.4);
     }
 
+    /* Alert */
     .alert {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 15px 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border-left: 4px solid #ffa500;
-      color: #333;
+      max-width: 800px;
+      margin: 0 auto 32px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: rgba(255, 165, 0, 0.1);
+      border: 1px solid rgba(255, 165, 0, 0.3);
+      color: #ffa500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .alert-info {
-      border-left-color: #3498db;
+      background: rgba(88, 166, 255, 0.1);
+      border-color: rgba(88, 166, 255, 0.3);
+      color: #58a6ff;
     }
 
+    /* Movies Grid */
     .movies-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 25px;
-      margin-top: 30px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 32px;
     }
 
     .movie-card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      animation: fadeInUp 0.5s ease-out;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
+
+    .movie-card:nth-child(1) { animation-delay: 0.05s; }
+    .movie-card:nth-child(2) { animation-delay: 0.1s; }
+    .movie-card:nth-child(3) { animation-delay: 0.15s; }
+    .movie-card:nth-child(4) { animation-delay: 0.2s; }
+    .movie-card:nth-child(5) { animation-delay: 0.25s; }
+    .movie-card:nth-child(6) { animation-delay: 0.3s; }
 
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
       }
       to {
         opacity: 1;
@@ -178,33 +235,36 @@
     }
 
     .movie-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      transform: translateY(-8px);
+      border-color: rgba(88, 166, 255, 0.3);
+      box-shadow: 0 12px 48px rgba(88, 166, 255, 0.2);
     }
 
     .movie-poster {
       width: 100%;
-      height: 350px;
+      height: 400px;
       object-fit: cover;
-      border-bottom: 3px solid #667eea;
+      display: block;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .movie-body {
-      padding: 20px;
+      padding: 24px;
     }
 
     .movie-title {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      color: #333;
-      margin-bottom: 10px;
+      color: #fff;
+      margin-bottom: 8px;
       line-height: 1.3;
+      letter-spacing: -0.3px;
     }
 
     .movie-year {
-      color: #666;
+      color: rgba(255, 255, 255, 0.6);
       font-size: 0.95rem;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .movie-actions {
@@ -214,53 +274,81 @@
     }
 
     .btn {
-      padding: 10px 16px;
+      padding: 10px 18px;
       border: none;
       border-radius: 8px;
       font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
       display: inline-block;
-      text-align: center;
+      font-family: inherit;
     }
 
-    .btn-success {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-      color: white;
+    .btn-add {
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      color: #2ecc71;
     }
 
-    .btn-warning {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
-      color: white;
-    }
-
-    .btn:hover {
+    .btn-add:hover {
+      background: rgba(46, 204, 113, 0.25);
+      border-color: #2ecc71;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-review {
+      background: rgba(155, 89, 182, 0.15);
+      border: 1px solid rgba(155, 89, 182, 0.3);
+      color: #9b59b6;
+    }
+
+    .btn-review:hover {
+      background: rgba(155, 89, 182, 0.25);
+      border-color: #9b59b6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+    }
+
+    .btn-read {
+      background: rgba(88, 166, 255, 0.15);
+      border: 1px solid rgba(88, 166, 255, 0.3);
+      color: #58a6ff;
+    }
+
+    .btn-read:hover {
+      background: rgba(88, 166, 255, 0.25);
+      border-color: #58a6ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
     }
 
     @media (max-width: 768px) {
+      .navbar-content {
+        padding: 0 20px;
+      }
+
+      .container {
+        padding: 32px 20px;
+      }
+
       h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
+      }
+
+      .search-section {
+        padding: 24px;
+      }
+
+      .search-form {
+        flex-direction: column;
       }
 
       .movies-grid {
         grid-template-columns: 1fr;
-      }
-
-      .search-group {
-        flex-direction: column;
-      }
-
-      .search-input {
-        min-width: 100%;
+        gap: 24px;
       }
     }
   </style>
@@ -268,29 +356,34 @@
 <body>
   <nav class="navbar">
     <div class="navbar-content">
-      <a href="/" class="brand">🎬 Movie Meter</a>
-      <div class="user-info">
-        <span class="welcome-text">Welcome, {{username}}!</span>
-        <a href="/logout" class="btn-logout">Logout</a>
+      <a href="/" class="brand">
+        <span>🎬</span>
+        <span>Movie Meter</span>
+      </a>
+      <div class="user-section">
+        <span class="welcome-text">{{username}}</span>
+        <a href="/logout" class="btn-logout">Sign Out</a>
       </div>
     </div>
   </nav>
 
   <div class="container">
-    <h1>Discover Movies</h1>
+    <div class="hero">
+      <h1>Discover Movies</h1>
+      <p class="subtitle">Find and review your favorite films</p>
+    </div>
 
-    <div class="search-form">
-      <form action="/discover" method="GET">
-        <div class="search-group">
-          <input type="text" name="title" class="search-input" placeholder="Search for movies..." required />
-          <button class="btn-search" type="submit">🔍 Search</button>
-        </div>
+    <div class="search-section">
+      <form action="/discover" method="GET" class="search-form">
+        <input type="text" name="title" class="search-input" placeholder="Search for movies..." required />
+        <button class="btn-search" type="submit">Search</button>
       </form>
     </div>
 
     {{#if message}}
     <div class="alert">
-      {{message}}
+      <span>ℹ️</span>
+      <span>{{message}}</span>
     </div>
     {{/if}}
 
@@ -301,21 +394,21 @@
         <img src="{{#if Poster}}{{Poster}}{{else}}/images/default-poster.jpg{{/if}}" class="movie-poster" alt="{{Title}}" />
         <div class="movie-body">
           <h3 class="movie-title">{{Title}}</h3>
-          <p class="movie-year"><strong>Year:</strong> {{Year}}</p>
+          <p class="movie-year">{{Year}}</p>
           
           <div class="movie-actions">
-            <form action="/movies/add" method="POST" style="display: inline-block;">
+            <form action="/movies/add" method="POST" style="display: inline;">
               <input type="hidden" name="title" value="{{Title}}">
               <input type="hidden" name="year" value="{{Year}}">
-              <button type="submit" class="btn btn-success">➕ Add Movie</button>
+              <button type="submit" class="btn btn-add">Add Movie</button>
             </form>
             
-            <form action="/reviews/new" method="GET" style="display: inline-block;">
+            <form action="/reviews/new" method="GET" style="display: inline;">
               <input type="hidden" name="title" value="{{Title}}">
-              <button type="submit" class="btn btn-warning">✍️ Review</button>
+              <button type="submit" class="btn btn-review">Write Review</button>
             </form>
 
-            <a href="/reviews?title={{Title}}" class="btn btn-secondary">📖 Reviews</a>
+            <a href="/reviews?title={{Title}}" class="btn btn-read">Read Reviews</a>
           </div>
         </div>
       </div>
@@ -323,7 +416,8 @@
     </div>
     {{else}}
     <div class="alert alert-info">
-      🎬 No movies available. Try searching for your favorite films!
+      <span>🎬</span>
+      <span>No movies found. Try searching for your favorite films!</span>
     </div>
     {{/if}}
   </div>

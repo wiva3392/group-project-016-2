@@ -1,177 +1,98 @@
 <!-- review.hbs - Add Review Page -->
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add Review - Movie Meter</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: 50px auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      animation: fadeInUp 0.5s ease-out;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Review - Movie Meter</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', sans-serif; background: #0a0a0a; min-height: 100vh;
+      padding: 40px 20px; color: #fff; } .container { max-width: 800px; margin:
+      0 auto; background: rgba(255, 255, 255, 0.03); backdrop-filter:
+      blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 48px;
+      border-radius: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); animation:
+      fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); } @keyframes fadeInUp { from
+      { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform:
+      translateY(0); } } .header { text-align: center; margin-bottom: 40px;
+      padding-bottom: 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+      h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; background:
+      linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; letter-spacing: -1px; } .movie-title { display:
+      inline-block; background: rgba(88, 166, 255, 0.15); border: 1px solid
+      rgba(88, 166, 255, 0.3); color: #58a6ff; padding: 8px 16px; border-radius:
+      8px; font-size: 1.1rem; font-weight: 600; } .form-group { margin-bottom:
+      32px; } label { display: block; margin-bottom: 12px; color: rgba(255, 255,
+      255, 0.9); font-weight: 600; font-size: 1rem; letter-spacing: 0.3px; }
+      input[type="number"], textarea { width: 100%; padding: 16px 20px; border:
+      1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 1rem;
+      background: rgba(255, 255, 255, 0.05); color: #fff; transition: all 0.3s
+      cubic-bezier(0.4, 0, 0.2, 1); font-family: inherit; }
+      input[type="number"]::placeholder, textarea::placeholder { color:
+      rgba(255, 255, 255, 0.4); } input[type="number"]:focus, textarea:focus {
+      outline: none; border-color: #58a6ff; background: rgba(255, 255, 255,
+      0.08); box-shadow: 0 0 0 4px rgba(88, 166, 255, 0.15); transform:
+      translateY(-1px); } textarea { resize: vertical; min-height: 150px;
+      line-height: 1.6; } .help-text { font-size: 0.85rem; color: rgba(255, 255,
+      255, 0.5); margin-top: 8px; padding-left: 4px; } .button-group { display:
+      flex; gap: 16px; margin-top: 40px; } .btn { flex: 1; padding: 16px;
+      border: none; border-radius: 12px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none; text-align: center; font-family: inherit; }
+      .btn-primary { background: linear-gradient(135deg, #58a6ff 0%, #7877c6
+      100%); color: white; box-shadow: 0 4px 16px rgba(88, 166, 255, 0.3); }
+      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px
+      rgba(88, 166, 255, 0.4); } .btn-secondary { background: rgba(255, 255,
+      255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); color: rgba(255,
+      255, 255, 0.8); } .btn-secondary:hover { background: rgba(255, 255, 255,
+      0.08); border-color: rgba(255, 255, 255, 0.3); transform:
+      translateY(-2px); } @media (max-width: 600px) { .container { padding: 32px
+      24px; } h2 { font-size: 2rem; } .button-group { flex-direction: column; }
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    h2 {
-      color: #333;
-      font-size: 2rem;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .subtitle {
-      color: #666;
-      margin-bottom: 30px;
-      font-size: 1.1rem;
-    }
-
-    .form-group {
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #333;
-      font-weight: 600;
-      font-size: 1rem;
-    }
-
-    input[type="number"],
-    textarea {
-      width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: #f9f9f9;
-      font-family: inherit;
-    }
-
-    input[type="number"]:focus,
-    textarea:focus {
-      outline: none;
-      border-color: #f093fb;
-      background: white;
-      box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.1);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-
-    .rating-info {
-      font-size: 0.85rem;
-      color: #666;
-      margin-top: 6px;
-    }
-
-    .char-count {
-      font-size: 0.85rem;
-      color: #666;
-      text-align: right;
-      margin-top: 6px;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 15px;
-      margin-top: 30px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      text-align: center;
-      display: inline-block;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
-      color: white;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    @media (max-width: 600px) {
-      .button-group {
-        flex-direction: column;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>✍️ Add Your Review</h2>
-    <p class="subtitle">Share your thoughts on <strong>{{title}}</strong></p>
-
-    <form action="/reviews/add" method="POST">
-      <input type="hidden" name="title" value="{{title}}" />
-
-      <div class="form-group">
-        <label for="rating">⭐ Rating (1-10)</label>
-        <input type="number" id="rating" name="rating" min="1" max="10" required />
-        <div class="rating-info">Rate from 1 (poor) to 10 (excellent)</div>
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>Write Your Review</h2>
+        <div class="movie-title">{{title}}</div>
       </div>
 
-      <div class="form-group">
-        <label for="review_text">📝 Your Review</label>
-        <textarea id="review_text" name="review_text" maxlength="200" required placeholder="Share your thoughts about this movie..."></textarea>
-        <div class="char-count">Maximum 200 characters</div>
-      </div>
+      <form action="/reviews/add" method="POST">
+        <input type="hidden" name="title" value="{{title}}" />
 
-      <div class="button-group">
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-        <a href="/discover" class="btn btn-secondary">Cancel</a>
-      </div>
-    </form>
-  </div>
-</body>
+        <div class="form-group">
+          <label for="rating">Rating</label>
+          <input
+            type="number"
+            id="rating"
+            name="rating"
+            min="1"
+            max="10"
+            required
+            placeholder="Rate 1-10"
+          />
+          <div class="help-text">Rate from 1 (poor) to 10 (masterpiece)</div>
+        </div>
+
+        <div class="form-group">
+          <label for="review_text">Your Thoughts</label>
+          <textarea
+            id="review_text"
+            name="review_text"
+            maxlength="200"
+            required
+            placeholder="Share what you thought about this movie..."
+          ></textarea>
+          <div class="help-text">Maximum 200 characters</div>
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">Publish Review</button>
+          <a href="/discover" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </body>
 </html>
