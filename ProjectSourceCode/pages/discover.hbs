@@ -48,12 +48,13 @@
       Title */ .section-title { font-size: 1.8rem; font-weight: 700;
       margin-bottom: 1.5rem; color: var(--text-primary); } /* Top 10 Section */
       .top10-section { margin-bottom: 4rem; } .top10-grid { display: grid;
-      grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
-      .top10-card { position: relative; aspect-ratio: 2/3; border-radius: 8px;
-      overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,
-      0, 0.2, 1); } .top10-card:hover { transform: scale(1.05); z-index: 10; }
-      .top10-number { position: absolute; bottom: -10px; left: -10px; font-size:
-      8rem; font-weight: 900; color: white; -webkit-text-stroke: 3px
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem;
+      margin-bottom: 1rem; } .top10-card { position: relative; aspect-ratio:
+      2/3; border-radius: 8px; overflow: hidden; cursor: pointer; transition:
+      all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-secondary); }
+      .top10-card:hover { transform: scale(1.05); z-index: 10; } .top10-number {
+      position: absolute; bottom: -5px; left: -5px; font-size: 5rem;
+      font-weight: 900; color: white; -webkit-text-stroke: 2px
       var(--bg-primary); z-index: 1; line-height: 1; pointer-events: none; }
       .top10-poster { width: 100%; height: 100%; object-fit: cover; display:
       block; } .top10-poster.loading { background: linear-gradient(90deg,
@@ -103,12 +104,13 @@
       background: linear-gradient(135deg, var(--bg-secondary),
       var(--bg-tertiary)); display: flex; align-items: center; justify-content:
       center; color: var(--text-secondary); font-size: 3rem; } @media
-      (max-width: 1024px) { .top10-grid { grid-template-columns: repeat(3, 1fr);
-      } .movies-grid { grid-template-columns: repeat(auto-fill, minmax(160px,
-      1fr)); } } @media (max-width: 768px) { .navbar-content, .container {
-      padding-left: 1.5rem; padding-right: 1.5rem; } .container { padding-top:
-      5rem; } .top10-grid { grid-template-columns: repeat(2, 1fr); }
-      .top10-number { font-size: 5rem; } .movies-grid { grid-template-columns:
+      (max-width: 1024px) { .top10-grid { grid-template-columns:
+      repeat(auto-fill, minmax(140px, 1fr)); } .movies-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } } @media
+      (max-width: 768px) { .navbar-content, .container { padding-left: 1.5rem;
+      padding-right: 1.5rem; } .container { padding-top: 5rem; } .top10-grid {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+      .top10-number { font-size: 3.5rem; } .movies-grid { grid-template-columns:
       repeat(auto-fill, minmax(140px, 1fr)); } .nav-links { gap: 1rem; }
       .nav-link { font-size: 0.85rem; } }
     </style>
@@ -336,7 +338,7 @@
       document.querySelectorAll('img').forEach(img => {
       img.addEventListener('error', function() { this.style.display = 'none';
       const placeholder = document.createElement('div'); placeholder.className =
-      'no-poster'; placeholder.textContent = '🎬';
+      'no-poster'; placeholder.textContent = '?';
       this.parentElement.insertBefore(placeholder, this); }); });
     </script>
   </body>

@@ -4,98 +4,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Movie Meter</title>
     <style>
-      :root { --bg-primary: #1a1f2e; --bg-secondary: #23272f; --bg-tertiary:
-      #282c34; --text-primary: #ffffff; --text-secondary: #8c92a4;
-      --accent-blue: #61dafb; --accent-purple: #c792ea; --border-color: #3d4451;
-      --error: #e06c75; } * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-      'Roboto', sans-serif; background: var(--bg-primary); min-height: 100vh;
-      display: flex; align-items: center; justify-content: center; padding:
-      20px; position: relative; overflow: hidden; } /* Animated Background
-      Gradient */ body::before { content: ''; position: fixed; top: -50%; left:
-      -50%; width: 200%; height: 200%; background: radial-gradient(circle at 20%
-      50%, rgba(97, 218, 251, 0.05) 0%, transparent 50%), radial-gradient(circle
-      at 80% 80%, rgba(199, 146, 234, 0.05) 0%, transparent 50%); animation:
-      rotate 20s linear infinite; pointer-events: none; } @keyframes rotate {
-      from { transform: rotate(0deg); } to { transform: rotate(360deg); } } /*
-      Floating Grid Lines */ .grid-line { position: fixed; background:
-      linear-gradient(90deg, transparent, rgba(97, 218, 251, 0.1), transparent);
-      animation: float 15s ease-in-out infinite; pointer-events: none; }
-      .grid-line-h { width: 100%; height: 1px; } .grid-line-v { height: 100%;
-      width: 1px; } @keyframes float { 0%, 100% { transform: translateY(0);
-      opacity: 0.3; } 50% { transform: translateY(-20px); opacity: 0.7; } }
-      .login-container { background: var(--bg-secondary); border: 1px solid
-      var(--border-color); padding: 3rem; border-radius: 16px; box-shadow: 0
-      20px 60px rgba(0, 0, 0, 0.5); width: 100%; max-width: 440px; position:
-      relative; z-index: 1; animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3,
-      1); } @keyframes slideIn { from { opacity: 0; transform: translateY(40px);
-      } to { opacity: 1; transform: translateY(0); } } .logo { text-align:
-      center; margin-bottom: 2.5rem; } .logo-icon { width: 56px; height: 56px;
-      margin: 0 auto 1rem; background: linear-gradient(135deg,
-      var(--accent-blue), var(--accent-purple)); border-radius: 12px; display:
-      flex; align-items: center; justify-content: center; font-size: 2rem;
-      font-weight: bold; animation: pulse 3s ease-in-out infinite; } @keyframes
-      pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(97, 218,
-      251, 0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(97,
-      218, 251, 0); } } .logo h1 { font-size: 2rem; font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-blue),
-      var(--accent-purple)); -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 0.5rem; } .logo p { color: var(--text-secondary);
-      font-size: 0.95rem; } .alert { background: rgba(224, 108, 117, 0.1);
-      border: 1px solid rgba(224, 108, 117, 0.3); color: var(--error); padding:
-      1rem; border-radius: 8px; margin-bottom: 1.5rem; animation: shake 0.5s; }
-      @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform:
-      translateX(-10px); } 75% { transform: translateX(10px); } } .form-group {
-      margin-bottom: 1.5rem; } label { display: block; margin-bottom: 0.5rem;
-      color: var(--text-primary); font-weight: 500; font-size: 0.9rem; } input {
-      width: 100%; padding: 0.875rem 1rem; border: 1px solid
-      var(--border-color); border-radius: 8px; font-size: 1rem; background:
-      var(--bg-tertiary); color: var(--text-primary); transition: all 0.2s;
-      font-family: inherit; } input::placeholder { color: var(--text-secondary);
-      } input:focus { outline: none; border-color: var(--accent-blue);
-      box-shadow: 0 0 0 4px rgba(97, 218, 251, 0.1); background:
-      var(--bg-primary); } .help-text { font-size: 0.85rem; color:
-      var(--text-secondary); margin-top: 0.5rem; } .btn { width: 100%; padding:
-      1rem; background: linear-gradient(135deg, var(--accent-blue),
-      var(--accent-purple)); color: white; border: none; border-radius: 8px;
-      font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-      margin-top: 0.5rem; position: relative; overflow: hidden; } .btn::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height:
-      100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255,
-      0.2), transparent); transition: left 0.5s; } .btn:hover::before { left:
-      100%; } .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px
-      rgba(97, 218, 251, 0.3); } .btn:active { transform: translateY(0); }
-      .footer-text { text-align: center; margin-top: 2rem; color:
-      var(--text-secondary); font-size: 0.9rem; } .footer-text a { color:
-      var(--accent-blue); text-decoration: none; font-weight: 600; transition:
-      color 0.2s; position: relative; } .footer-text a::after { content: '';
-      position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
-      background: var(--accent-blue); transition: width 0.3s; } .footer-text
-      a:hover { color: var(--accent-purple); } .footer-text a:hover::after {
-      width: 100%; } @media (max-width: 480px) { .login-container { padding:
-      2rem 1.5rem; } .logo h1 { font-size: 1.75rem; } }
+      :root { --bg-primary: #141414; --bg-secondary: #1f1f1f; --bg-tertiary:
+      #2a2a2a; --text-primary: #ffffff; --text-secondary: #b3b3b3; --accent-red:
+      #e50914; --border-color: #333333; --error: #f44336; } * { margin: 0;
+      padding: 0; box-sizing: border-box; } body { font-family: -apple-system,
+      BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      background: var(--bg-primary); min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 20px; position:
+      relative; overflow: hidden; } /* Animated Background */ body::before {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(229, 9, 20, 0.1) 0%,
+      transparent 50%), radial-gradient(circle at 80% 80%, rgba(229, 9, 20,
+      0.05) 0%, transparent 50%); pointer-events: none; animation: pulse 8s
+      ease-in-out infinite; } @keyframes pulse { 0%, 100% { opacity: 0.5; } 50%
+      { opacity: 1; } } .login-container { background: var(--bg-secondary);
+      padding: 3rem; border-radius: 8px; width: 100%; max-width: 450px;
+      position: relative; z-index: 1; animation: fadeIn 0.6s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to {
+      opacity: 1; transform: translateY(0); } } .logo { text-align: center;
+      margin-bottom: 2.5rem; } .logo-icon { width: 64px; height: 64px; margin: 0
+      auto 1rem; background: var(--accent-red); border-radius: 4px; display:
+      flex; align-items: center; justify-content: center; font-size: 2.5rem;
+      font-weight: bold; color: white; } .logo h1 { font-size: 2rem;
+      font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+      .logo p { color: var(--text-secondary); font-size: 0.95rem; } .alert {
+      background: rgba(244, 67, 54, 0.1); border: 1px solid var(--error); color:
+      var(--error); padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;
+      font-size: 0.9rem; } .form-group { margin-bottom: 1.5rem; } label {
+      display: block; margin-bottom: 0.5rem; color: var(--text-primary);
+      font-weight: 500; font-size: 0.9rem; } input { width: 100%; padding: 1rem;
+      border: 1px solid var(--border-color); border-radius: 4px; font-size:
+      1rem; background: var(--bg-tertiary); color: var(--text-primary);
+      transition: all 0.2s; font-family: inherit; } input::placeholder { color:
+      var(--text-secondary); } input:focus { outline: none; border-color:
+      var(--accent-red); background: var(--bg-primary); } .btn { width: 100%;
+      padding: 1rem; background: var(--accent-red); color: white; border: none;
+      border-radius: 4px; font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; margin-top: 0.5rem; } .btn:hover { background:
+      #f40612; transform: translateY(-2px); } .btn:active { transform:
+      translateY(0); } .footer-text { text-align: center; margin-top: 2rem;
+      color: var(--text-secondary); font-size: 0.9rem; } .footer-text a { color:
+      var(--text-primary); text-decoration: none; font-weight: 600; transition:
+      color 0.2s; } .footer-text a:hover { color: var(--accent-red); } @media
+      (max-width: 480px) { .login-container { padding: 2rem 1.5rem; } .logo h1 {
+      font-size: 1.75rem; } }
     </style>
   </head>
   <body>
-    <!-- Grid Lines -->
-    <div
-      class="grid-line grid-line-h"
-      style="top: 20%; animation-delay: 0s;"
-    ></div>
-    <div
-      class="grid-line grid-line-h"
-      style="top: 60%; animation-delay: 2s;"
-    ></div>
-    <div
-      class="grid-line grid-line-v"
-      style="left: 15%; animation-delay: 1s;"
-    ></div>
-    <div
-      class="grid-line grid-line-v"
-      style="left: 85%; animation-delay: 3s;"
-    ></div>
-
     <div class="login-container">
       <div class="logo">
         <div class="logo-icon">M</div>

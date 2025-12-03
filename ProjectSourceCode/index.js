@@ -23,6 +23,7 @@ const hbs = handlebars.create({
 });
 
 hbs.handlebars.registerHelper("eq", (a, b) => a === b);
+hbs.handlebars.registerHelper("increment", (value) => parseInt(value) + 1);
 
 // *****************************************************
 // Database Configuration
@@ -267,16 +268,25 @@ app.post("/register", async (req, res) => {
     }
 
     const hash = await bcrypt.hash(password, 10);
-    await db.none("INSERT INTO users (username, password) VALUES ($1, $2)", [
-      username,
-      hash,
-    ]);
+    const newUser = await db.one(
+      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING user_id, username",
+      [username, hash]
+    );
 
     console.log(`New user registered: ${username}`);
 
+    // Automatically log in the user after registration
+    req.session.user = newUser;
+    req.session.save();
+
     return isJsonRequest(req)
-      ? res.status(200).json({ message: "User registered successfully" })
-      : res.redirect("/login");
+      ? res
+          .status(200)
+          .json({
+            message: "User registered successfully",
+            username: newUser.username,
+          })
+      : res.redirect("/discover");
   } catch (err) {
     console.error("Registration failed:", err);
 

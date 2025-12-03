@@ -6,15 +6,14 @@
   <title>Write Review - Movie Meter</title>
   <style>
     :root {
-      --bg-primary: #23272f;
-      --bg-secondary: #282c34;
-      --bg-tertiary: #2d323b;
+      --bg-primary: #141414;
+      --bg-secondary: #1f1f1f;
+      --bg-tertiary: #2a2a2a;
       --text-primary: #ffffff;
-      --text-secondary: #8c92a4;
-      --accent-blue: #61dafb;
-      --accent-purple: #c792ea;
-      --border-color: #3d4451;
-      --hover-bg: #343943;
+      --text-secondary: #b3b3b3;
+      --accent-red: #e50914;
+      --border-color: #333333;
+      --hover-bg: #2f2f2f;
     }
 
     * {
@@ -24,7 +23,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
       min-height: 100vh;
@@ -59,35 +58,30 @@
       font-size: 2.5rem;
       font-weight: 800;
       margin-bottom: 1rem;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text-primary);
     }
 
     .movie-badge {
       display: inline-block;
       background: var(--bg-secondary);
-      border: 1px solid var(--accent-blue);
-      color: var(--accent-blue);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
       padding: 0.625rem 1.25rem;
-      border-radius: 8px;
+      border-radius: 4px;
       font-size: 1.1rem;
       font-weight: 600;
       transition: all 0.2s;
     }
 
     .movie-badge:hover {
-      background: rgba(97, 218, 251, 0.1);
+      background: rgba(229, 9, 20, 0.1);
       transform: translateY(-2px);
     }
 
     .form-card {
       background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 8px;
       padding: 2.5rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .form-group {
@@ -107,7 +101,7 @@
       width: 100%;
       padding: 1rem 1.25rem;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 4px;
       font-size: 1rem;
       background: var(--bg-tertiary);
       color: var(--text-primary);
@@ -123,9 +117,8 @@
     input[type="number"]:focus,
     textarea:focus {
       outline: none;
-      border-color: var(--accent-blue);
+      border-color: var(--accent-red);
       background: var(--bg-primary);
-      box-shadow: 0 0 0 4px rgba(97, 218, 251, 0.1);
     }
 
     textarea {
@@ -147,12 +140,12 @@
       margin-top: 0.75rem;
       padding: 0.75rem;
       background: var(--bg-primary);
-      border-radius: 6px;
+      border-radius: 4px;
       font-weight: 600;
     }
 
     .rating-stars {
-      color: var(--accent-blue);
+      color: var(--accent-red);
       font-size: 1.25rem;
     }
 
@@ -172,7 +165,7 @@
       flex: 1;
       padding: 1rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 4px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
@@ -187,13 +180,13 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      background: var(--accent-red);
       color: white;
     }
 
     .btn-primary:hover {
+      background: #f40612;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(97, 218, 251, 0.3);
     }
 
     .btn-secondary {
@@ -204,7 +197,6 @@
 
     .btn-secondary:hover {
       background: var(--hover-bg);
-      border-color: var(--text-secondary);
       color: var(--text-primary);
     }
 
@@ -226,14 +218,14 @@
       }
     }
 
-    /* Character counter animation */
-    @keyframes warningPulse {
-      0%, 100% { color: var(--text-secondary); }
-      50% { color: var(--accent-purple); }
+    .char-count.warning {
+      color: var(--accent-red);
+      animation: pulse 1s infinite;
     }
 
-    .char-count.warning {
-      animation: warningPulse 1s infinite;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
     }
   </style>
 </head>
@@ -295,7 +287,6 @@
   </div>
 
   <script>
-    // Rating preview
     const ratingInput = document.getElementById('rating');
     const ratingPreview = document.getElementById('ratingPreview');
     const ratingText = document.getElementById('ratingText');
@@ -310,7 +301,6 @@
       }
     });
 
-    // Character counter
     const textarea = document.getElementById('review_text');
     const charCount = document.getElementById('charCount');
 

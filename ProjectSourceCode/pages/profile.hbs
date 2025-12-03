@@ -5,26 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - Movie Meter</title>
   <style>
+    :root {
+      --bg-primary: #141414;
+      --bg-secondary: #1f1f1f;
+      --bg-tertiary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --accent-red: #e50914;
+      --accent-blue: #61dafb;
+      --accent-purple: #c792ea;
+      --border-color: #333333;
+      --hover-bg: #2f2f2f;
+      --success: #46d369;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    :root {
-      --bg-primary: #23272f;
-      --bg-secondary: #282c34;
-      --bg-tertiary: #2d323b;
-      --text-primary: #ffffff;
-      --text-secondary: #8c92a4;
-      --accent-blue: #61dafb;
-      --accent-purple: #c792ea;
-      --border-color: #3d4451;
-      --hover-bg: #343943;
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
@@ -32,37 +34,56 @@
 
     /* Navbar */
     .navbar {
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 0;
-      position: sticky;
+      background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+      position: fixed;
       top: 0;
-      z-index: 100;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      transition: background 0.3s;
+    }
+
+    .navbar.scrolled {
+      background: var(--bg-primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     .navbar-content {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 3rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 1rem;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      font-size: 1.5rem;
+      font-size: 1.75rem;
       font-weight: 700;
-      color: var(--accent-blue);
+      color: var(--accent-red);
       text-decoration: none;
       transition: transform 0.2s;
+      cursor: pointer;
     }
 
     .brand:hover {
-      transform: translateY(-2px);
+      transform: scale(1.05);
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-red);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
     }
 
     .nav-links {
@@ -72,24 +93,22 @@
     }
 
     .nav-link {
-      color: var(--text-secondary);
+      color: var(--text-primary);
       text-decoration: none;
       font-weight: 500;
+      font-size: 0.9rem;
       transition: color 0.2s;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
     }
 
     .nav-link:hover {
-      color: var(--accent-blue);
-      background: var(--hover-bg);
+      color: var(--text-secondary);
     }
 
     /* Container */
     .container {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 3rem 2rem;
+      padding: 6rem 3rem 3rem;
     }
 
     /* Hero Section */
@@ -98,18 +117,14 @@
       margin-bottom: 3rem;
       padding: 3rem 2rem;
       background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
+      border-radius: 8px;
     }
 
     .hero h1 {
       font-size: 3rem;
       font-weight: 800;
       margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text-primary);
     }
 
     .hero-subtitle {
@@ -120,16 +135,14 @@
     /* Card Styles */
     .card {
       background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 8px;
       padding: 2rem;
-      margin-bottom: 2rem;
-      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 3rem;
+      transition: transform 0.2s;
     }
 
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(97, 218, 251, 0.1);
     }
 
     .card-header {
@@ -144,10 +157,7 @@
     .card-title {
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--accent-blue);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      color: var(--text-primary);
     }
 
     /* Sort Buttons */
@@ -158,26 +168,25 @@
 
     .btn-sort {
       padding: 0.5rem 1rem;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.9rem;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.2s;
       border: 1px solid var(--border-color);
-      background: var(--bg-tertiary);
+      background: transparent;
       color: var(--text-secondary);
     }
 
     .btn-sort:hover {
       background: var(--hover-bg);
-      color: var(--accent-blue);
-      border-color: var(--accent-blue);
+      color: var(--text-primary);
     }
 
     .btn-sort.active {
-      background: var(--accent-blue);
-      color: var(--bg-primary);
-      border-color: var(--accent-blue);
+      background: var(--accent-red);
+      color: white;
+      border-color: var(--accent-red);
     }
 
     /* List Styles */
@@ -190,8 +199,7 @@
     .list-item {
       background: var(--bg-tertiary);
       padding: 1.25rem;
-      border-radius: 8px;
-      border-left: 3px solid var(--accent-blue);
+      border-radius: 4px;
       transition: all 0.2s;
     }
 
@@ -204,7 +212,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
     .item-title {
@@ -221,10 +229,10 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      background: var(--accent-red);
       color: white;
       padding: 0.5rem 1rem;
-      border-radius: 6px;
+      border-radius: 4px;
       font-weight: 700;
       font-size: 0.95rem;
     }
@@ -260,8 +268,14 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+      .navbar-content,
       .container {
-        padding: 2rem 1rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+
+      .container {
+        padding-top: 5rem;
       }
 
       .hero h1 {
@@ -290,11 +304,10 @@
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
+  <nav class="navbar" id="navbar">
     <div class="navbar-content">
-      <a href="/" class="brand">
-        <span>🎬</span>
+      <a href="/discover" class="brand">
+        <div class="brand-icon">M</div>
         <span>Movie Meter</span>
       </a>
       <div class="nav-links">
@@ -305,21 +318,15 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
   <div class="container">
-    <!-- Hero Section -->
     <div class="hero">
       <h1>{{username}}'s Profile</h1>
       <p class="hero-subtitle">Track your favorite movies and reviews</p>
     </div>
 
-    <!-- Watchlist Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">
-          <span>📚</span>
-          <span>My Watchlist</span>
-        </h2>
+        <h2 class="card-title">My Watchlist</h2>
       </div>
       {{#if watchlist.length}}
         <div class="item-list">
@@ -336,19 +343,15 @@
         </div>
       {{else}}
         <div class="empty-state">
-          <div class="empty-state-icon">🎬</div>
+          <div class="empty-state-icon">?</div>
           <p>Your watchlist is empty. Add movies from the Discover page.</p>
         </div>
       {{/if}}
     </div>
 
-    <!-- My Reviews Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">
-          <span>✍️</span>
-          <span>My Reviews</span>
-        </h2>
+        <h2 class="card-title">My Reviews</h2>
         <div class="sort-controls">
           <a href="/profile?sort=rating_desc" 
              class="btn-sort {{#if (eq sort 'rating_desc')}}active{{/if}}">
@@ -372,7 +375,7 @@
                   {{/if}}
                 </div>
                 <span class="rating-badge">
-                  <span>⭐</span>
+                  <span>★</span>
                   <span>{{this.rating}}/10</span>
                 </span>
               </div>
@@ -384,19 +387,15 @@
         </div>
       {{else}}
         <div class="empty-state">
-          <div class="empty-state-icon">💭</div>
+          <div class="empty-state-icon">?</div>
           <p>You haven't written any reviews yet.</p>
         </div>
       {{/if}}
     </div>
 
-    <!-- Top Movies Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">
-          <span>🏆</span>
-          <span>Top Rated Movies</span>
-        </h2>
+        <h2 class="card-title">Top Rated Movies</h2>
       </div>
       {{#if topMovies.length}}
         <div class="item-list">
@@ -414,7 +413,7 @@
                   </span>
                 </div>
                 <span class="rating-badge">
-                  <span>⭐</span>
+                  <span>★</span>
                   <span>{{this.avg_rating}}</span>
                 </span>
               </div>
@@ -423,11 +422,22 @@
         </div>
       {{else}}
         <div class="empty-state">
-          <div class="empty-state-icon">🎯</div>
+          <div class="empty-state-icon">?</div>
           <p>You haven't reviewed any movies yet.</p>
         </div>
       {{/if}}
     </div>
   </div>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
 </body>
 </html>
