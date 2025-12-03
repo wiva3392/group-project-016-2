@@ -22,8 +22,11 @@ const hbs = handlebars.create({
   defaultLayout: false,
 });
 
+// Helper: equality check for templates
 hbs.handlebars.registerHelper("eq", (a, b) => a === b);
-hbs.handlebars.registerHelper("increment", (value) => parseInt(value) + 1);
+
+// Helper: convert 0–9 index to 1–10 (Top 10 numbers)
+hbs.handlebars.registerHelper("inc", (value) => parseInt(value, 10) + 1);
 
 // *****************************************************
 // Database Configuration

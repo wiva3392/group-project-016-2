@@ -9,11 +9,11 @@
       #e50914; --accent-blue: #61dafb; --accent-purple: #c792ea; --border-color:
       #333333; --hover-bg: #2f2f2f; --success: #46d369; --warning: #e5c07b; } *
       { margin: 0; padding: 0; box-sizing: border-box; } body { font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue',
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue",
       sans-serif; background: var(--bg-primary); color: var(--text-primary);
-      min-height: 100vh; } /* Navbar */ .navbar { background:
-      linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); position:
-      fixed; top: 0; width: 100%; z-index: 1000; padding: 1.5rem 0; transition:
+      min-height: 100vh; } /* Navbar */ .navbar { background: linear-gradient(
+      180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100% ); position: fixed;
+      top: 0; width: 100%; z-index: 1000; padding: 1.5rem 0; transition:
       background 0.3s; } .navbar.scrolled { background: var(--bg-primary);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); } .navbar-content { max-width:
       1400px; margin: 0 auto; padding: 0 3rem; display: flex; justify-content:
@@ -49,7 +49,7 @@
       margin-bottom: 1.5rem; color: var(--text-primary); } /* Top 10 Section */
       .top10-section { margin-bottom: 4rem; } .top10-grid { display: grid;
       grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
-      .top10-card { position: relative; aspect-ratio: 2/3; border-radius: 8px;
+      .top10-card { position: relative; aspect-ratio: 2 / 3; border-radius: 8px;
       overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,
       0, 0.2, 1); } /* Only raise z-index on hover, no scaling of the whole card
       */ .top10-card:hover { z-index: 10; } .top10-number { position: absolute;
@@ -60,38 +60,38 @@
       block; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* poster
       animation */ } /* Scale only the poster on hover */ .top10-card:hover
       .top10-poster { transform: scale(1.05); } .top10-poster.loading {
-      background: linear-gradient(90deg, var(--bg-secondary) 25%,
-      var(--bg-tertiary) 50%, var(--bg-secondary) 75%); background-size: 200%
+      background: linear-gradient( 90deg, var(--bg-secondary) 25%,
+      var(--bg-tertiary) 50%, var(--bg-secondary) 75% ); background-size: 200%
       100%; animation: loading 1.5s infinite; } @keyframes loading { 0% {
       background-position: 200% 0; } 100% { background-position: -200% 0; } }
       .top10-overlay { position: absolute; inset: 0; background:
-      linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 50%); display: flex;
-      flex-direction: column; justify-content: flex-end; padding: 1rem; opacity:
-      0; transition: opacity 0.3s; } .top10-card:hover .top10-overlay { opacity:
-      1; } .top10-title { font-size: 0.9rem; font-weight: 600; margin-bottom:
-      0.25rem; position: relative; z-index: 2; } .top10-rating { font-size:
-      0.8rem; color: var(--accent-red); font-weight: 700; } /* Movies Grid */
-      .movies-grid { display: grid; grid-template-columns: repeat(auto-fill,
-      minmax(200px, 1fr)); gap: 1rem; margin-bottom: 3rem; } .movie-card {
-      position: relative; border-radius: 8px; overflow: hidden; transition: all
-      0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; background:
-      var(--bg-secondary); } .movie-card:hover { transform: scale(1.05);
-      z-index: 10; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); } .movie-poster {
-      width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
-      .movie-poster.loading { background: linear-gradient(90deg,
-      var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
-      background-size: 200% 100%; animation: loading 1.5s infinite; }
-      .movie-overlay { position: absolute; inset: 0; background:
-      linear-gradient(0deg, rgba(0,0,0,0.95) 0%, transparent 60%); display:
+      linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, transparent 50%); display:
       flex; flex-direction: column; justify-content: flex-end; padding: 1rem;
-      opacity: 0; transition: opacity 0.3s; } .movie-card:hover .movie-overlay {
-      opacity: 1; } .movie-title { font-size: 1rem; font-weight: 700;
-      margin-bottom: 0.25rem; line-height: 1.2; } .movie-year { color:
-      var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem; }
-      .movie-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; } .btn {
-      padding: 0.4rem 0.75rem; border: 1px solid; border-radius: 4px; font-size:
-      0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-      text-decoration: none; display: inline-block; font-family: inherit;
+      opacity: 0; transition: opacity 0.3s; } .top10-card:hover .top10-overlay {
+      opacity: 1; } .top10-title { font-size: 0.9rem; font-weight: 600;
+      margin-bottom: 0.25rem; position: relative; z-index: 2; } .top10-rating {
+      font-size: 0.8rem; color: var(--accent-red); font-weight: 700; } /* Movies
+      Grid */ .movies-grid { display: grid; grid-template-columns:
+      repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+      .movie-card { position: relative; border-radius: 8px; overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;
+      background: var(--bg-secondary); } .movie-card:hover { transform:
+      scale(1.05); z-index: 10; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }
+      .movie-poster { width: 100%; aspect-ratio: 2 / 3; object-fit: cover;
+      display: block; } .movie-poster.loading { background: linear-gradient(
+      90deg, var(--bg-secondary) 25%, var(--bg-tertiary) 50%,
+      var(--bg-secondary) 75% ); background-size: 200% 100%; animation: loading
+      1.5s infinite; } .movie-overlay { position: absolute; inset: 0;
+      background: linear-gradient( 0deg, rgba(0, 0, 0, 0.95) 0%, transparent 60%
+      ); display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 1rem; opacity: 0; transition: opacity 0.3s; } .movie-card:hover
+      .movie-overlay { opacity: 1; } .movie-title { font-size: 1rem;
+      font-weight: 700; margin-bottom: 0.25rem; line-height: 1.2; } .movie-year
+      { color: var(--text-secondary); font-size: 0.85rem; margin-bottom:
+      0.75rem; } .movie-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .btn { padding: 0.4rem 0.75rem; border: 1px solid; border-radius: 4px;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all
+      0.2s; text-decoration: none; display: inline-block; font-family: inherit;
       background: transparent; } .btn-add { border-color: var(--success); color:
       var(--success); } .btn-add:hover { background: var(--success); color:
       white; } .btn-review { border-color: var(--accent-purple); color:
@@ -103,8 +103,8 @@
       var(--text-secondary); } .empty-icon { width: 80px; height: 80px; margin:
       0 auto 1rem; background: var(--bg-secondary); border-radius: 50%; display:
       flex; align-items: center; justify-content: center; font-size: 3rem; } /*
-      Placeholder for no poster */ .no-poster { width: 100%; aspect-ratio: 2/3;
-      background: linear-gradient(135deg, var(--bg-secondary),
+      Placeholder for no poster */ .no-poster { width: 100%; aspect-ratio: 2 /
+      3; background: linear-gradient(135deg, var(--bg-secondary),
       var(--bg-tertiary)); display: flex; align-items: center; justify-content:
       center; color: var(--text-secondary); font-size: 3rem; } @media
       (max-width: 1024px) { .top10-grid { grid-template-columns: repeat(3, 1fr);
@@ -160,8 +160,9 @@
             <div class="top10-grid">
               {{#each top10Movies}}
                 <div class="top10-card">
-                  <!-- use helper so it shows 1–10 instead of 0–9 -->
+                  <!-- Shows 1–10 instead of 0–9 using the inc helper -->
                   <div class="top10-number">{{inc @index}}</div>
+
                   {{#if Poster}}
                     <img
                       src="{{Poster}}"
@@ -172,11 +173,13 @@
                   {{else}}
                     <div class="no-poster">🎬</div>
                   {{/if}}
+
                   <div class="top10-overlay">
                     <h3 class="top10-title">{{Title}}</h3>
                     {{#if imdbRating}}
                       <div class="top10-rating">⭐ {{imdbRating}}</div>
                     {{/if}}
+
                     <div class="movie-actions" style="margin-top: 0.5rem;">
                       <form
                         action="/movies/add"
@@ -194,16 +197,14 @@
                         style="display: inline;"
                       >
                         <input type="hidden" name="title" value="{{Title}}" />
-                        <button
-                          type="submit"
-                          class="btn btn-review"
-                        >Review</button>
+                        <button type="submit" class="btn btn-review">
+                          Review
+                        </button>
                       </form>
 
-                      <a
-                        href="/reviews?title={{Title}}"
-                        class="btn btn-read"
-                      >Read</a>
+                      <a href="/reviews?title={{Title}}" class="btn btn-read">
+                        Read
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -228,6 +229,7 @@
                   {{else}}
                     <div class="no-poster">🎬</div>
                   {{/if}}
+
                   <div class="movie-overlay">
                     <h3 class="movie-title">{{Title}}</h3>
                     <p class="movie-year">{{Year}}</p>
@@ -249,16 +251,14 @@
                         style="display: inline;"
                       >
                         <input type="hidden" name="title" value="{{Title}}" />
-                        <button
-                          type="submit"
-                          class="btn btn-review"
-                        >Review</button>
+                        <button type="submit" class="btn btn-review">
+                          Review
+                        </button>
                       </form>
 
-                      <a
-                        href="/reviews?title={{Title}}"
-                        class="btn btn-read"
-                      >Read</a>
+                      <a href="/reviews?title={{Title}}" class="btn btn-read">
+                        Read
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -284,6 +284,7 @@
                 {{else}}
                   <div class="no-poster">🎬</div>
                 {{/if}}
+
                 <div class="movie-overlay">
                   <h3 class="movie-title">{{Title}}</h3>
                   <p class="movie-year">{{Year}}</p>
@@ -305,16 +306,14 @@
                       style="display: inline;"
                     >
                       <input type="hidden" name="title" value="{{Title}}" />
-                      <button
-                        type="submit"
-                        class="btn btn-review"
-                      >Review</button>
+                      <button type="submit" class="btn btn-review">
+                        Review
+                      </button>
                     </form>
 
-                    <a
-                      href="/reviews?title={{Title}}"
-                      class="btn btn-read"
-                    >Read</a>
+                    <a href="/reviews?title={{Title}}" class="btn btn-read">
+                      Read
+                    </a>
                   </div>
                 </div>
               </div>
@@ -335,13 +334,13 @@
 
     <script>
       // Add scroll effect to navbar const navbar =
-      document.getElementById('navbar'); window.addEventListener('scroll', () =>
-      { if (window.scrollY > 50) { navbar.classList.add('scrolled'); } else {
-      navbar.classList.remove('scrolled'); } }); // Handle image loading errors
-      document.querySelectorAll('img').forEach(img => {
-      img.addEventListener('error', function() { this.style.display = 'none';
-      const placeholder = document.createElement('div'); placeholder.className =
-      'no-poster'; placeholder.textContent = '🎬';
+      document.getElementById("navbar"); window.addEventListener("scroll", () =>
+      { if (window.scrollY > 50) { navbar.classList.add("scrolled"); } else {
+      navbar.classList.remove("scrolled"); } }); // Handle image loading errors
+      document.querySelectorAll("img").forEach((img) => {
+      img.addEventListener("error", function () { this.style.display = "none";
+      const placeholder = document.createElement("div"); placeholder.className =
+      "no-poster"; placeholder.textContent = "🎬";
       this.parentElement.insertBefore(placeholder, this); }); });
     </script>
   </body>
