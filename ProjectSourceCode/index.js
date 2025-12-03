@@ -15,9 +15,6 @@ const app = express();
 // *****************************************************
 // Handlebars Configuration
 // *****************************************************
-const handlebars = require("express-handlebars");
-const path = require("path");
-
 const hbs = handlebars.create({
   extname: "hbs",
   layoutsDir: false,
@@ -26,10 +23,9 @@ const hbs = handlebars.create({
 });
 
 hbs.handlebars.registerHelper("eq", (a, b) => a === b);
-hbs.handlebars.registerHelper("increment", (value) => parseInt(value, 10) + 1);
+hbs.handlebars.registerHelper("increment", (value) => parseInt(value) + 1);
 
-// then use `hbs` in app.engine(...)
-
+// *****************************************************
 // Database Configuration
 // *****************************************************
 const dbConfig = {
