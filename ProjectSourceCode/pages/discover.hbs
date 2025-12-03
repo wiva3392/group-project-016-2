@@ -1,459 +1,343 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Discover - Movie Meter</title>
-  <style>
-    :root {
-      --bg-primary: #23272f;
-      --bg-secondary: #282c34;
-      --bg-tertiary: #2d323b;
-      --text-primary: #ffffff;
-      --text-secondary: #8c92a4;
-      --accent-blue: #61dafb;
-      --accent-purple: #c792ea;
-      --border-color: #3d4451;
-      --hover-bg: #343943;
-      --success: #98c379;
-      --warning: #e5c07b;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
-    }
-
-    /* Navbar */
-    .navbar {
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .navbar-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent-blue);
-      text-decoration: none;
-      transition: transform 0.2s;
-    }
-
-    .brand:hover {
-      transform: translateY(-2px);
-    }
-
-    .brand-icon {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .nav-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      transition: all 0.2s;
-    }
-
-    .nav-link:hover {
-      color: var(--accent-blue);
-      background: var(--hover-bg);
-    }
-
-    /* Container */
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 3rem 2rem;
-    }
-
-    /* Hero Section */
-    .hero {
-      text-align: center;
-      margin-bottom: 3rem;
-      animation: fadeIn 0.6s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-subtitle {
-      color: var(--text-secondary);
-      font-size: 1.2rem;
-    }
-
-    /* Search Section */
-    .search-section {
-      max-width: 800px;
-      margin: 0 auto 3rem;
-      animation: slideUp 0.6s ease-out 0.2s backwards;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .search-form {
-      display: flex;
-      gap: 1rem;
-      background: var(--bg-secondary);
-      padding: 1.5rem;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      transition: all 0.3s;
-    }
-
-    .search-form:focus-within {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 0 4px rgba(97, 218, 251, 0.1);
-    }
-
-    .search-input {
-      flex: 1;
-      padding: 1rem 1.25rem;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 1rem;
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .search-input::placeholder {
-      color: var(--text-secondary);
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--accent-blue);
-      background: var(--bg-primary);
-    }
-
-    .btn-search {
-      padding: 1rem 2rem;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-
-    .btn-search:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(97, 218, 251, 0.3);
-    }
-
-    .btn-search:active {
-      transform: translateY(0);
-    }
-
-    /* Alert */
-    .alert {
-      max-width: 800px;
-      margin: 0 auto 2rem;
-      padding: 1rem 1.25rem;
-      border-radius: 8px;
-      background: rgba(229, 192, 123, 0.1);
-      border: 1px solid rgba(229, 192, 123, 0.3);
-      color: var(--warning);
-      animation: slideUp 0.6s ease-out 0.3s backwards;
-    }
-
-    .alert-info {
-      background: rgba(97, 218, 251, 0.1);
-      border-color: rgba(97, 218, 251, 0.3);
-      color: var(--accent-blue);
-    }
-
-    /* Movies Grid */
-    .movies-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      animation: fadeIn 0.6s ease-out 0.4s backwards;
-    }
-
-    .movie-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-    }
-
-    .movie-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--accent-blue);
-      box-shadow: 0 12px 40px rgba(97, 218, 251, 0.2);
-    }
-
-    .movie-poster {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      display: block;
-      border-bottom: 1px solid var(--border-color);
-      transition: transform 0.3s;
-    }
-
-    .movie-card:hover .movie-poster {
-      transform: scale(1.05);
-    }
-
-    .movie-body {
-      padding: 1.5rem;
-    }
-
-    .movie-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      line-height: 1.3;
-    }
-
-    .movie-year {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .movie-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .btn {
-      padding: 0.625rem 1rem;
-      border: 1px solid;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      display: inline-block;
-      font-family: inherit;
-      background: transparent;
-    }
-
-    .btn-add {
-      border-color: var(--success);
-      color: var(--success);
-    }
-
-    .btn-add:hover {
-      background: rgba(152, 195, 121, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .btn-review {
-      border-color: var(--accent-purple);
-      color: var(--accent-purple);
-    }
-
-    .btn-review:hover {
-      background: rgba(199, 146, 234, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .btn-read {
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
-    }
-
-    .btn-read:hover {
-      background: rgba(97, 218, 251, 0.1);
-      transform: translateY(-2px);
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-secondary);
-    }
-
-    .empty-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 1rem;
-      background: var(--bg-secondary);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      border: 1px solid var(--border-color);
-    }
-
-    @media (max-width: 768px) {
-      .navbar-content {
-        padding: 0 1rem;
-      }
-
-      .container {
-        padding: 2rem 1rem;
-      }
-
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .search-form {
-        flex-direction: column;
-      }
-
-      .movies-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .nav-links {
-        flex-wrap: wrap;
-      }
-    }
-  </style>
-</head>
-<body>
-  <nav class="navbar">
-    <div class="navbar-content">
-      <a href="/" class="brand">
-        <div class="brand-icon">M</div>
-        <span>Movie Meter</span>
-      </a>
-      <div class="nav-links">
-        <span class="nav-link">{{username}}</span>
-        <a href="/profile" class="nav-link">Profile</a>
-        <a href="/logout" class="nav-link">Sign Out</a>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container">
-    <div class="hero">
-      <h1>Discover Movies</h1>
-      <p class="hero-subtitle">Find and review your favorite films</p>
-    </div>
-
-    <div class="search-section">
-      <form action="/discover" method="GET" class="search-form">
-        <input type="text" name="title" class="search-input" placeholder="Search for movies..." required />
-        <button class="btn-search" type="submit">Search</button>
-      </form>
-    </div>
-
-    {{#if message}}
-    <div class="alert{{#if results}} alert-info{{/if}}">
-      {{message}}
-    </div>
-    {{/if}}
-
-    {{#if results}}
-    <div class="movies-grid">
-      {{#each results}}
-      <div class="movie-card">
-        <img src="{{#if Poster}}{{Poster}}{{else}}/images/default-poster.jpg{{/if}}" class="movie-poster" alt="{{Title}}" />
-        <div class="movie-body">
-          <h3 class="movie-title">{{Title}}</h3>
-          <p class="movie-year">{{Year}}</p>
-          
-          <div class="movie-actions">
-            <form action="/movies/add" method="POST" style="display: inline;">
-              <input type="hidden" name="title" value="{{Title}}">
-              <input type="hidden" name="year" value="{{Year}}">
-              <button type="submit" class="btn btn-add">Add to List</button>
-            </form>
-            
-            <form action="/reviews/new" method="GET" style="display: inline;">
-              <input type="hidden" name="title" value="{{Title}}">
-              <button type="submit" class="btn btn-review">Write Review</button>
-            </form>
-
-            <a href="/reviews?title={{Title}}" class="btn btn-read">Read Reviews</a>
-          </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discover - Movie Meter</title>
+    <style>
+      :root { --bg-primary: #141414; --bg-secondary: #1f1f1f; --bg-tertiary:
+      #2a2a2a; --text-primary: #ffffff; --text-secondary: #b3b3b3; --accent-red:
+      #e50914; --accent-blue: #61dafb; --accent-purple: #c792ea; --border-color:
+      #333333; --hover-bg: #2f2f2f; --success: #46d369; --warning: #e5c07b; } *
+      { margin: 0; padding: 0; box-sizing: border-box; } body { font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue',
+      sans-serif; background: var(--bg-primary); color: var(--text-primary);
+      min-height: 100vh; } /* Navbar */ .navbar { background:
+      linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); position:
+      fixed; top: 0; width: 100%; z-index: 1000; padding: 1.5rem 0; transition:
+      background 0.3s; } .navbar.scrolled { background: var(--bg-primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); } .navbar-content { max-width:
+      1400px; margin: 0 auto; padding: 0 3rem; display: flex; justify-content:
+      space-between; align-items: center; gap: 1rem; } .brand { display: flex;
+      align-items: center; gap: 0.75rem; font-size: 1.75rem; font-weight: 700;
+      color: var(--accent-red); text-decoration: none; transition: transform
+      0.2s; cursor: pointer; } .brand:hover { transform: scale(1.05); }
+      .brand-icon { width: 32px; height: 32px; background: var(--accent-red);
+      border-radius: 4px; display: flex; align-items: center; justify-content:
+      center; font-weight: bold; color: white; } .nav-links { display: flex;
+      gap: 1.5rem; align-items: center; } .nav-link { color:
+      var(--text-primary); text-decoration: none; font-weight: 500; font-size:
+      0.9rem; transition: color 0.2s; } .nav-link:hover { color:
+      var(--text-secondary); } /* Container */ .container { max-width: 1400px;
+      margin: 0 auto; padding: 6rem 3rem 3rem; } /* Hero Section */ .hero {
+      margin-bottom: 2rem; } .search-section { max-width: 600px; margin: 0 auto
+      3rem; } .search-form { display: flex; gap: 0.5rem; background: rgba(255,
+      255, 255, 0.1); padding: 0.5rem; border-radius: 8px; backdrop-filter:
+      blur(10px); } .search-input { flex: 1; padding: 0.75rem 1.25rem; border:
+      1px solid transparent; border-radius: 6px; font-size: 1rem; background:
+      rgba(255, 255, 255, 0.1); color: var(--text-primary); transition: all
+      0.2s; font-family: inherit; } .search-input::placeholder { color:
+      var(--text-secondary); } .search-input:focus { outline: none; background:
+      rgba(255, 255, 255, 0.15); border-color: var(--accent-red); } .btn-search
+      { padding: 0.75rem 2rem; background: var(--accent-red); color: white;
+      border: none; border-radius: 6px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+      .btn-search:hover { background: #f40612; transform: scale(1.05); } /*
+      Alert */ .alert { max-width: 800px; margin: 0 auto 2rem; padding: 1rem
+      1.25rem; border-radius: 8px; background: rgba(229, 192, 123, 0.1);
+      border-left: 4px solid var(--warning); color: var(--warning); } /* Section
+      Title */ .section-title { font-size: 1.8rem; font-weight: 700;
+      margin-bottom: 1.5rem; color: var(--text-primary); } /* Top 10 Section */
+      .top10-section { margin-bottom: 4rem; } .top10-grid { display: grid;
+      grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+      .top10-card { position: relative; aspect-ratio: 2/3; border-radius: 8px;
+      overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,
+      0, 0.2, 1); } .top10-card:hover { transform: scale(1.05); z-index: 10; }
+      .top10-number { position: absolute; bottom: -10px; left: -10px; font-size:
+      8rem; font-weight: 900; color: white; -webkit-text-stroke: 3px
+      var(--bg-primary); z-index: 1; line-height: 1; pointer-events: none; }
+      .top10-poster { width: 100%; height: 100%; object-fit: cover; display:
+      block; } .top10-poster.loading { background: linear-gradient(90deg,
+      var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
+      background-size: 200% 100%; animation: loading 1.5s infinite; } @keyframes
+      loading { 0% { background-position: 200% 0; } 100% { background-position:
+      -200% 0; } } .top10-overlay { position: absolute; inset: 0; background:
+      linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 50%); display: flex;
+      flex-direction: column; justify-content: flex-end; padding: 1rem; opacity:
+      0; transition: opacity 0.3s; } .top10-card:hover .top10-overlay { opacity:
+      1; } .top10-title { font-size: 0.9rem; font-weight: 600; margin-bottom:
+      0.25rem; position: relative; z-index: 2; } .top10-rating { font-size:
+      0.8rem; color: var(--accent-red); font-weight: 700; } /* Movies Grid */
+      .movies-grid { display: grid; grid-template-columns: repeat(auto-fill,
+      minmax(200px, 1fr)); gap: 1rem; margin-bottom: 3rem; } .movie-card {
+      position: relative; border-radius: 8px; overflow: hidden; transition: all
+      0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; background:
+      var(--bg-secondary); } .movie-card:hover { transform: scale(1.05);
+      z-index: 10; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); } .movie-poster {
+      width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+      .movie-poster.loading { background: linear-gradient(90deg,
+      var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
+      background-size: 200% 100%; animation: loading 1.5s infinite; }
+      .movie-overlay { position: absolute; inset: 0; background:
+      linear-gradient(0deg, rgba(0,0,0,0.95) 0%, transparent 60%); display:
+      flex; flex-direction: column; justify-content: flex-end; padding: 1rem;
+      opacity: 0; transition: opacity 0.3s; } .movie-card:hover .movie-overlay {
+      opacity: 1; } .movie-title { font-size: 1rem; font-weight: 700;
+      margin-bottom: 0.25rem; line-height: 1.2; } .movie-year { color:
+      var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem; }
+      .movie-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; } .btn {
+      padding: 0.4rem 0.75rem; border: 1px solid; border-radius: 4px; font-size:
+      0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+      text-decoration: none; display: inline-block; font-family: inherit;
+      background: transparent; } .btn-add { border-color: var(--success); color:
+      var(--success); } .btn-add:hover { background: var(--success); color:
+      white; } .btn-review { border-color: var(--accent-purple); color:
+      var(--accent-purple); } .btn-review:hover { background:
+      var(--accent-purple); color: white; } .btn-read { border-color:
+      var(--accent-blue); color: var(--accent-blue); } .btn-read:hover {
+      background: var(--accent-blue); color: white; } /* Empty State */
+      .empty-state { text-align: center; padding: 4rem 2rem; color:
+      var(--text-secondary); } .empty-icon { width: 80px; height: 80px; margin:
+      0 auto 1rem; background: var(--bg-secondary); border-radius: 50%; display:
+      flex; align-items: center; justify-content: center; font-size: 3rem; } /*
+      Placeholder for no poster */ .no-poster { width: 100%; aspect-ratio: 2/3;
+      background: linear-gradient(135deg, var(--bg-secondary),
+      var(--bg-tertiary)); display: flex; align-items: center; justify-content:
+      center; color: var(--text-secondary); font-size: 3rem; } @media
+      (max-width: 1024px) { .top10-grid { grid-template-columns: repeat(3, 1fr);
+      } .movies-grid { grid-template-columns: repeat(auto-fill, minmax(160px,
+      1fr)); } } @media (max-width: 768px) { .navbar-content, .container {
+      padding-left: 1.5rem; padding-right: 1.5rem; } .container { padding-top:
+      5rem; } .top10-grid { grid-template-columns: repeat(2, 1fr); }
+      .top10-number { font-size: 5rem; } .movies-grid { grid-template-columns:
+      repeat(auto-fill, minmax(140px, 1fr)); } .nav-links { gap: 1rem; }
+      .nav-link { font-size: 0.85rem; } }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar" id="navbar">
+      <div class="navbar-content">
+        <a href="/discover" class="brand">
+          <div class="brand-icon">M</div>
+          <span>Movie Meter</span>
+        </a>
+        <div class="nav-links">
+          <span class="nav-link">{{username}}</span>
+          <a href="/profile" class="nav-link">Profile</a>
+          <a href="/logout" class="nav-link">Sign Out</a>
         </div>
       </div>
-      {{/each}}
+    </nav>
+
+    <div class="container">
+      <div class="hero">
+        <div class="search-section">
+          <form action="/discover" method="GET" class="search-form">
+            <input
+              type="text"
+              name="title"
+              class="search-input"
+              placeholder="Search for movies..."
+            />
+            <button class="btn-search" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+
+      {{#if message}}
+        <div class="alert">
+          {{message}}
+        </div>
+      {{/if}}
+
+      {{#unless isSearch}}
+        {{#if top10Movies}}
+          <div class="top10-section">
+            <h2 class="section-title">Top 10 Movies on Movie Meter</h2>
+            <div class="top10-grid">
+              {{#each top10Movies}}
+                <div class="top10-card">
+                  <div class="top10-number">{{@index}}</div>
+                  {{#if Poster}}
+                    <img
+                      src="{{Poster}}"
+                      class="top10-poster"
+                      alt="{{Title}}"
+                      loading="lazy"
+                    />
+                  {{else}}
+                    <div class="no-poster">🎬</div>
+                  {{/if}}
+                  <div class="top10-overlay">
+                    <h3 class="top10-title">{{Title}}</h3>
+                    {{#if imdbRating}}
+                      <div class="top10-rating">⭐ {{imdbRating}}</div>
+                    {{/if}}
+                    <div class="movie-actions" style="margin-top: 0.5rem;">
+                      <form
+                        action="/movies/add"
+                        method="POST"
+                        style="display: inline;"
+                      >
+                        <input type="hidden" name="title" value="{{Title}}" />
+                        <input type="hidden" name="year" value="{{Year}}" />
+                        <button type="submit" class="btn btn-add">Add</button>
+                      </form>
+
+                      <form
+                        action="/reviews/new"
+                        method="GET"
+                        style="display: inline;"
+                      >
+                        <input type="hidden" name="title" value="{{Title}}" />
+                        <button
+                          type="submit"
+                          class="btn btn-review"
+                        >Review</button>
+                      </form>
+
+                      <a
+                        href="/reviews?title={{Title}}"
+                        class="btn btn-read"
+                      >Read</a>
+                    </div>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{/if}}
+
+        {{#if popularMovies}}
+          <div class="popular-section">
+            <h2 class="section-title">Popular on Movie Meter</h2>
+            <div class="movies-grid">
+              {{#each popularMovies}}
+                <div class="movie-card">
+                  {{#if Poster}}
+                    <img
+                      src="{{Poster}}"
+                      class="movie-poster"
+                      alt="{{Title}}"
+                      loading="lazy"
+                    />
+                  {{else}}
+                    <div class="no-poster">🎬</div>
+                  {{/if}}
+                  <div class="movie-overlay">
+                    <h3 class="movie-title">{{Title}}</h3>
+                    <p class="movie-year">{{Year}}</p>
+
+                    <div class="movie-actions">
+                      <form
+                        action="/movies/add"
+                        method="POST"
+                        style="display: inline;"
+                      >
+                        <input type="hidden" name="title" value="{{Title}}" />
+                        <input type="hidden" name="year" value="{{Year}}" />
+                        <button type="submit" class="btn btn-add">Add</button>
+                      </form>
+
+                      <form
+                        action="/reviews/new"
+                        method="GET"
+                        style="display: inline;"
+                      >
+                        <input type="hidden" name="title" value="{{Title}}" />
+                        <button
+                          type="submit"
+                          class="btn btn-review"
+                        >Review</button>
+                      </form>
+
+                      <a
+                        href="/reviews?title={{Title}}"
+                        class="btn btn-read"
+                      >Read</a>
+                    </div>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{/if}}
+      {{/unless}}
+
+      {{#if results}}
+        <div class="search-results">
+          <h2 class="section-title">Search Results</h2>
+          <div class="movies-grid">
+            {{#each results}}
+              <div class="movie-card">
+                {{#if Poster}}
+                  <img
+                    src="{{Poster}}"
+                    class="movie-poster"
+                    alt="{{Title}}"
+                    loading="lazy"
+                  />
+                {{else}}
+                  <div class="no-poster">🎬</div>
+                {{/if}}
+                <div class="movie-overlay">
+                  <h3 class="movie-title">{{Title}}</h3>
+                  <p class="movie-year">{{Year}}</p>
+
+                  <div class="movie-actions">
+                    <form
+                      action="/movies/add"
+                      method="POST"
+                      style="display: inline;"
+                    >
+                      <input type="hidden" name="title" value="{{Title}}" />
+                      <input type="hidden" name="year" value="{{Year}}" />
+                      <button type="submit" class="btn btn-add">Add</button>
+                    </form>
+
+                    <form
+                      action="/reviews/new"
+                      method="GET"
+                      style="display: inline;"
+                    >
+                      <input type="hidden" name="title" value="{{Title}}" />
+                      <button
+                        type="submit"
+                        class="btn btn-review"
+                      >Review</button>
+                    </form>
+
+                    <a
+                      href="/reviews?title={{Title}}"
+                      class="btn btn-read"
+                    >Read</a>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+
+      {{#if isSearch}}
+        {{#unless results}}
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>No movies found. Try a different search term.</p>
+          </div>
+        {{/unless}}
+      {{/if}}
     </div>
-    {{else}}
-    {{#unless message}}
-    <div class="empty-state">
-      <div class="empty-icon">◉</div>
-      <p>Search for movies to get started</p>
-    </div>
-    {{/unless}}
-    {{/if}}
-  </div>
-</body>
+
+    <script>
+      // Add scroll effect to navbar const navbar =
+      document.getElementById('navbar'); window.addEventListener('scroll', () =>
+      { if (window.scrollY > 50) { navbar.classList.add('scrolled'); } else {
+      navbar.classList.remove('scrolled'); } }); // Handle image loading errors
+      document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error', function() { this.style.display = 'none';
+      const placeholder = document.createElement('div'); placeholder.className =
+      'no-poster'; placeholder.textContent = '🎬';
+      this.parentElement.insertBefore(placeholder, this); }); });
+    </script>
+  </body>
 </html>

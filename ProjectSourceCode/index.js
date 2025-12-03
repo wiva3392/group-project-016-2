@@ -133,6 +133,101 @@ app.use(
 );
 
 // *****************************************************
+// Helper Functions
+// *****************************************************
+async function fetchMoviesByTitle(apiKey, title) {
+  try {
+    const response = await axios.get("http://www.omdbapi.com/", {
+      params: { apikey: apiKey, s: title },
+      timeout: 5000,
+    });
+
+    if (response.data.Response === "False") {
+      return [];
+    }
+
+    return (response.data.Search || []).slice(0, 10).map((movie) => ({
+      Title: movie.Title,
+      Year: movie.Year,
+      Poster: movie.Poster !== "N/A" ? movie.Poster : null,
+      imdbID: movie.imdbID,
+      url: `https://www.imdb.com/title/${movie.imdbID}`,
+    }));
+  } catch (error) {
+    console.error(`Error fetching ${title}:`, error.message);
+    return [];
+  }
+}
+
+async function fetchPopularMovies(apiKey) {
+  // List of popular movie searches to simulate "trending"
+  const popularSearches = [
+    "Avengers",
+    "Batman",
+    "Spider",
+    "Star Wars",
+    "Harry Potter",
+  ];
+
+  const allMovies = [];
+
+  for (const search of popularSearches) {
+    const movies = await fetchMoviesByTitle(apiKey, search);
+    allMovies.push(...movies);
+  }
+
+  // Remove duplicates and return first 50
+  const uniqueMovies = allMovies.filter(
+    (movie, index, self) =>
+      index === self.findIndex((m) => m.imdbID === movie.imdbID)
+  );
+
+  return uniqueMovies.slice(0, 50);
+}
+
+async function fetchTop10Movies(apiKey) {
+  // Most watched/popular movie titles
+  const top10Titles = [
+    "The Shawshank Redemption",
+    "The Godfather",
+    "The Dark Knight",
+    "Inception",
+    "Interstellar",
+    "Pulp Fiction",
+    "Fight Club",
+    "Forrest Gump",
+    "The Matrix",
+    "Goodfellas",
+  ];
+
+  const movies = [];
+
+  for (const title of top10Titles) {
+    try {
+      const response = await axios.get("http://www.omdbapi.com/", {
+        params: { apikey: apiKey, t: title },
+        timeout: 5000,
+      });
+
+      if (response.data.Response !== "False") {
+        movies.push({
+          Title: response.data.Title,
+          Year: response.data.Year,
+          Poster: response.data.Poster !== "N/A" ? response.data.Poster : null,
+          imdbID: response.data.imdbID,
+          imdbRating: response.data.imdbRating,
+          url: `https://www.imdb.com/title/${response.data.imdbID}`,
+        });
+      }
+    } catch (error) {
+      console.error(`Error fetching ${title}:`, error.message);
+    }
+  }
+
+  return movies;
+}
+
+// *****************************************************
 // Middleware
 // *****************************************************
 const isJsonRequest = (req) =>
@@ -322,51 +417,67 @@ app.get("/profile", async (req, res) => {
   }
 });
 
-// Discover Page
+// Discover Page - Enhanced with Popular Movies and Top 10
 app.get("/discover", async (req, res) => {
   try {
     const apiKey = process.env.API_KEY;
-    const searchQuery = req.query.title || "The Avengers";
+    const searchQuery = req.query.title;
 
     if (!apiKey) {
       return res.render("discover", {
         username: req.session.user?.username,
         results: [],
+        popularMovies: [],
+        top10Movies: [],
         message: "OMDB API key not configured.",
       });
     }
 
-    const response = await axios.get("http://www.omdbapi.com/", {
-      params: { apikey: apiKey, s: searchQuery },
-    });
+    let results = [];
+    let popularMovies = [];
+    let top10Movies = [];
+    let message = null;
 
-    if (response.data.Response === "False") {
-      return res.render("discover", {
-        username: req.session.user?.username,
-        results: [],
-        message: "No movies found.",
+    if (searchQuery) {
+      // User searched for something specific
+      const response = await axios.get("http://www.omdbapi.com/", {
+        params: { apikey: apiKey, s: searchQuery },
       });
-    }
 
-    const results = (response.data.Search || []).map((movie) => ({
-      Title: movie.Title,
-      Year: movie.Year,
-      Poster:
-        movie.Poster !== "N/A" ? movie.Poster : "/images/default-movie.jpg",
-      imdbID: movie.imdbID,
-      url: `https://www.imdb.com/title/${movie.imdbID}`,
-    }));
+      if (response.data.Response === "False") {
+        message = "No movies found for your search.";
+      } else {
+        results = (response.data.Search || []).map((movie) => ({
+          Title: movie.Title,
+          Year: movie.Year,
+          Poster: movie.Poster !== "N/A" ? movie.Poster : null,
+          imdbID: movie.imdbID,
+          url: `https://www.imdb.com/title/${movie.imdbID}`,
+        }));
+      }
+    } else {
+      // Default page load - show popular movies and top 10
+      [popularMovies, top10Movies] = await Promise.all([
+        fetchPopularMovies(apiKey),
+        fetchTop10Movies(apiKey),
+      ]);
+    }
 
     res.render("discover", {
       username: req.session.user?.username,
       results,
-      message: null,
+      popularMovies,
+      top10Movies,
+      message,
+      isSearch: !!searchQuery,
     });
   } catch (err) {
     console.error("OMDB API Error:", err.message);
     res.render("discover", {
       username: req.session.user?.username,
       results: [],
+      popularMovies: [],
+      top10Movies: [],
       message: "Error loading movies. Try again later.",
     });
   }
