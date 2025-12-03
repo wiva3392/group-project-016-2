@@ -1,47 +1,41 @@
 // *****************************************************
-// <!-- Section 1 : Import Dependencies -->
+// Import Dependencies
 // *****************************************************
-
-const express = require("express"); // To build an application server or API
-const app = express();
+const express = require("express");
 const handlebars = require("express-handlebars");
-const Handlebars = require("handlebars");
 const path = require("path");
-const pgp = require("pg-promise")(); // To connect to the Postgres DB from the node server
+const pgp = require("pg-promise")();
 const bodyParser = require("body-parser");
-const session = require("express-session"); // To set the session object
-const bcrypt = require("bcryptjs"); // To hash passwords
-const axios = require("axios"); // To make HTTP requests
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
+const axios = require("axios");
+
+const app = express();
 
 // *****************************************************
-// <!-- Section 2 : Connect to DB -->
+// Handlebars Configuration
 // *****************************************************
-
-// create `ExpressHandlebars` instance and configure the layouts and partials dir.
 const hbs = handlebars.create({
   extname: "hbs",
   layoutsDir: false,
-  partialsDir: __dirname + "/partials",
+  partialsDir: path.join(__dirname, "partials"),
   defaultLayout: false,
 });
 
-hbs.handlebars.registerHelper("eq", function(a , b) {
-  return a === b;
-});
+hbs.handlebars.registerHelper("eq", (a, b) => a === b);
 
-// Build a connection string:
-// - Prefer DATABASE_URL (Render, or local .env).
-// - Otherwise, build from POSTGRES_* env vars.
-// - If neither is set, throw an error instead of silently using 'db'.
-console.log("[ENV DEBUG] DATABASE_URL =", process.env.DATABASE_URL);
-console.log("[ENV DEBUG] POSTGRES_USER =", process.env.POSTGRES_USER);
-console.log("[ENV DEBUG] POSTGRES_DB =", process.env.POSTGRES_DB);
-console.log("[ENV DEBUG] POSTGRES_HOST =", process.env.POSTGRES_HOST);
-console.log("[ENV DEBUG] All env keys:", Object.keys(process.env));
+// *****************************************************
+// Database Configuration
+// *****************************************************
+const dbConfig = {
+  connectionString: process.env.DATABASE_URL || buildConnectionString(),
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
+};
 
-let connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
+function buildConnectionString() {
   const {
     POSTGRES_USER,
     POSTGRES_PASSWORD,
@@ -51,32 +45,22 @@ if (!connectionString) {
   } = process.env;
 
   if (!POSTGRES_USER || !POSTGRES_PASSWORD || !POSTGRES_DB || !POSTGRES_HOST) {
-    throw new Error(
-      "Database env vars missing. Need POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST or DATABASE_URL."
-    );
+    throw new Error("Database environment variables are missing.");
   }
 
-  const port = POSTGRES_PORT || 5432;
-
-  connectionString =
-    `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}` +
-    `@${POSTGRES_HOST}:${port}/${POSTGRES_DB}`;
+  return `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${
+    POSTGRES_PORT || 5432
+  }/${POSTGRES_DB}`;
 }
 
-const db = pgp({
-  connectionString,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
-});
+const db = pgp(dbConfig);
 
-// test your database
-db.connect()
-  .then(async (obj) => {
+// Initialize Database Tables
+async function initializeDatabase() {
+  try {
+    await db.connect();
     console.log("Database connection successful");
 
-    // Create users table
     await db.none(`
       CREATE TABLE IF NOT EXISTS users (
         user_id SERIAL PRIMARY KEY,
@@ -84,9 +68,7 @@ db.connect()
         password VARCHAR(255) NOT NULL
       )
     `);
-    console.log("Users table ready");
 
-    // Create movies table
     await db.none(`
       CREATE TABLE IF NOT EXISTS movies (
         movie_id SERIAL PRIMARY KEY,
@@ -95,9 +77,6 @@ db.connect()
       )
     `);
 
-    console.log("Movies table ready");
-
-    // Create reviews table
     await db.none(`
       CREATE TABLE IF NOT EXISTS reviews (
         review_id SERIAL PRIMARY KEY,
@@ -109,9 +88,7 @@ db.connect()
         FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE
       )
     `);
-    console.log("Reviews table ready");
 
-    // Create user_list join table
     await db.none(`
       CREATE TABLE IF NOT EXISTS user_list (
         list_id SERIAL PRIMARY KEY,
@@ -122,33 +99,32 @@ db.connect()
         UNIQUE (user_id, movie_id)
       )
     `);
-    console.log("User List table ready");
 
-    obj.done();
-  })
-  .catch((error) => {
-    console.log("ERROR connecting to database:", error.message || error);
-  });
+    console.log("All tables initialized successfully");
+  } catch (error) {
+    console.error("Database initialization error:", error.message);
+  }
+}
+
+initializeDatabase();
 
 // *****************************************************
-// <!-- Section 3 : App Settings -->
+// Express Configuration
 // *****************************************************
-
-// Register `hbs` as our view engine using its bound `engine()` function.
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
-app.set("views", path.join(__dirname, "pages")); // Using pages folder directly
-app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
+app.set("views", path.join(__dirname, "pages"));
 
-// initialize session variables
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(
   session({
-    secret:
-      process.env.SESSION_SECRET || "fallback-secret-key-change-in-production",
+    secret: process.env.SESSION_SECRET || "fallback-secret-key",
     saveUninitialized: false,
     resave: false,
     cookie: {
-      secure: false, // <--- force non-secure cookie
+      secure: false,
       httpOnly: true,
       sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24, // 1 day
@@ -156,252 +132,180 @@ app.use(
   })
 );
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
-
 // *****************************************************
-// <!-- Section 4 : API Routes -->
+// Middleware
 // *****************************************************
-
-// Helper function to check if request is JSON
-const isJsonRequest = (req) => {
-  return (
-    req.is("application/json") ||
-    req.headers["content-type"] === "application/json"
-  );
-};
-
-// ============================================
-// PUBLIC ROUTES (No authentication required)
-// ============================================
-
-// Root route - redirect to login
-app.get("/", (req, res) => {
-  res.redirect("/login");
-});
-
-// Welcome route for testing
-app.get("/welcome", (req, res) => {
-  res.json({ status: "success", message: "Welcome!" });
-});
-
-// Register - GET route
-app.get("/register", (req, res) => {
-  res.render("register", { message: null });
-});
-
-// Register - POST route with validation (supports both JSON and form data)
-app.post("/register", async (req, res) => {
-  try {
-    // Validate input
-    if (!req.body.username || !req.body.password) {
-      const message = "Username and password are required.";
-
-      if (isJsonRequest(req)) {
-        return res.status(400).json({ message });
-      }
-      return res.render("register", { message });
-    }
-
-    // Hash password
-    const hash = await bcrypt.hash(req.body.password, 10);
-
-    // Insert user into database
-    const query = `
-      INSERT INTO users (username, password)
-      VALUES ($1, $2)
-    `;
-    await db.none(query, [req.body.username, hash]);
-
-    console.log(`New user registered: ${req.body.username}`);
-
-    // Return JSON for API tests, redirect for browser
-    if (isJsonRequest(req)) {
-      return res.status(200).json({ message: "User registered successfully" });
-    }
-    return res.redirect("/login");
-  } catch (err) {
-    console.error("Registration failed:", err);
-
-    // Check for duplicate username error
-    if (err.code === "23505" || /unique/i.test(err.message)) {
-      const message = "Username already exists. Please choose another.";
-
-      if (isJsonRequest(req)) {
-        return res.status(400).json({ message });
-      }
-      return res.render("register", { message });
-    }
-
-    // Generic error
-    const message = "Registration failed. Please try again later.";
-
-    if (isJsonRequest(req)) {
-      return res.status(500).json({ message });
-    }
-    return res.render("register", { message });
-  }
-});
-
-// Login - GET route
-app.get("/login", (req, res) => {
-  res.render("login", { message: null });
-});
-
-// Login - POST route
-app.post("/login", async (req, res) => {
-  try {
-    // Validate input
-    if (!req.body.username || !req.body.password) {
-      const message = "Username and password are required.";
-
-      if (isJsonRequest(req)) {
-        return res.status(400).json({ message });
-      }
-      return res.render("login", { message });
-    }
-
-    // Find user in database
-    const user = await db.oneOrNone("SELECT * FROM users WHERE username = $1", [
-      req.body.username,
-    ]);
-
-    // Check if user exists
-    if (!user) {
-      const message = "User not found. Please register first.";
-
-      if (isJsonRequest(req)) {
-        return res.status(401).json({ message });
-      }
-      return res.render("login", { message });
-    }
-
-    // Compare password with hash
-    const match = await bcrypt.compare(req.body.password, user.password);
-
-    if (!match) {
-      const message = "Incorrect username or password.";
-
-      if (isJsonRequest(req)) {
-        return res.status(401).json({ message });
-      }
-      return res.render("login", { message });
-    }
-
-    // Save user to session
-    req.session.user = user;
-    req.session.save();
-
-    console.log(`User logged in: ${user.username}`);
-
-    if (isJsonRequest(req)) {
-      return res.status(200).json({
-        message: "Login successful",
-        username: user.username,
-      });
-    }
-    return res.redirect("/discover");
-  } catch (error) {
-    console.error("Login error:", error);
-    const message = "Login failed. Please try again.";
-
-    if (isJsonRequest(req)) {
-      return res.status(500).json({ message });
-    }
-    return res.render("login", { message });
-  }
-});
-
-
-
-
-// ============================================
-// AUTHENTICATION MIDDLEWARE
-// ============================================
-// All routes below this require authentication
+const isJsonRequest = (req) =>
+  req.is("application/json") ||
+  req.headers["content-type"] === "application/json";
 
 const auth = (req, res, next) => {
   if (!req.session.user) {
-    // User not logged in - redirect to login page
     return res.redirect("/login");
   }
   next();
 };
 
-// Apply authentication to all routes below
+// *****************************************************
+// Public Routes
+// *****************************************************
+app.get("/", (req, res) => res.redirect("/login"));
+
+app.get("/welcome", (req, res) => {
+  res.json({ status: "success", message: "Welcome!" });
+});
+
+// Register Routes
+app.get("/register", (req, res) => {
+  res.render("register", { message: null });
+});
+
+app.post("/register", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      const message = "Username and password are required.";
+      return isJsonRequest(req)
+        ? res.status(400).json({ message })
+        : res.render("register", { message });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    await db.none("INSERT INTO users (username, password) VALUES ($1, $2)", [
+      username,
+      hash,
+    ]);
+
+    console.log(`New user registered: ${username}`);
+
+    return isJsonRequest(req)
+      ? res.status(200).json({ message: "User registered successfully" })
+      : res.redirect("/login");
+  } catch (err) {
+    console.error("Registration failed:", err);
+
+    const message =
+      err.code === "23505" || /unique/i.test(err.message)
+        ? "Username already exists. Please choose another."
+        : "Registration failed. Please try again later.";
+
+    return isJsonRequest(req)
+      ? res.status(err.code === "23505" ? 400 : 500).json({ message })
+      : res.render("register", { message });
+  }
+});
+
+// Login Routes
+app.get("/login", (req, res) => {
+  res.render("login", { message: null });
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      const message = "Username and password are required.";
+      return isJsonRequest(req)
+        ? res.status(400).json({ message })
+        : res.render("login", { message });
+    }
+
+    const user = await db.oneOrNone("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
+
+    if (!user) {
+      const message = "User not found. Please register first.";
+      return isJsonRequest(req)
+        ? res.status(401).json({ message })
+        : res.render("login", { message });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      const message = "Incorrect username or password.";
+      return isJsonRequest(req)
+        ? res.status(401).json({ message })
+        : res.render("login", { message });
+    }
+
+    req.session.user = user;
+    req.session.save();
+
+    console.log(`User logged in: ${user.username}`);
+
+    return isJsonRequest(req)
+      ? res
+          .status(200)
+          .json({ message: "Login successful", username: user.username })
+      : res.redirect("/discover");
+  } catch (error) {
+    console.error("Login error:", error);
+    const message = "Login failed. Please try again.";
+
+    return isJsonRequest(req)
+      ? res.status(500).json({ message })
+      : res.render("login", { message });
+  }
+});
+
+// *****************************************************
+// Protected Routes (Authentication Required)
+// *****************************************************
 app.use(auth);
 
-// Profile page - show user's watchlist (first step)
-// Profile page - Watchlist + My Reviews + Top Movies
+// Profile Page
 app.get("/profile", async (req, res) => {
   try {
     const userId = req.session.user.user_id;
+    const sort = req.query.sort || "rating_desc";
 
-    // --- Sorting for "My Reviews" ---
-    const sort = req.query.sort || "rating_desc"; // default: highest rated first
+    const orderBy =
+      sort === "rating_asc"
+        ? "r.rating ASC, m.title ASC"
+        : "r.rating DESC, m.title ASC";
 
-    // Whitelist mapping for ORDER BY clause
-    let reviewsOrderBy;
-    let sortLabel;
-    switch (sort) {
-      case "rating_asc":
-        reviewsOrderBy = "r.rating ASC, m.title ASC";
-        sortLabel = "Lowest Rated First";
-        break;
-      case "rating_desc":
-      default:
-        reviewsOrderBy = "r.rating DESC, m.title ASC";
-        sortLabel = "Highest Rated First";
-        break;
-    }
-
-    // --- Watchlist query ---
-    const watchlistPromise = db.any(
-      `SELECT m.title AS title, m.release_year AS release_year
-       FROM user_list ul
-       JOIN movies m ON ul.movie_id = m.movie_id
-       WHERE ul.user_id = $1
-       ORDER BY m.title ASC`,
-      [userId]
-    );
-
-    // --- All reviews by this user (with ordering) ---
-    const reviewsPromise = db.any(
-      `SELECT 
-         m.title        AS title,
-         m.release_year AS release_year,
-         r.rating       AS rating,
-         r.review_text  AS review_text
-       FROM reviews r
-       JOIN movies m ON r.movie_id = m.movie_id
-       WHERE r.user_id = $1
-       ORDER BY ${reviewsOrderBy}`,
-      [userId]
-    );
-
-    // --- Top 10 movies this user has reviewed (by avg rating desc) ---
-    const topMoviesPromise = db.any(
-      `SELECT 
-         m.title        AS title,
-         m.release_year AS release_year,
-         AVG(r.rating)  AS avg_rating,
-         COUNT(*)       AS review_count
-       FROM reviews r
-       JOIN movies m ON r.movie_id = m.movie_id
-       WHERE r.user_id = $1
-       GROUP BY m.movie_id, m.title, m.release_year
-       ORDER BY AVG(r.rating) DESC, COUNT(*) DESC, m.title ASC
-       LIMIT 10`,
-      [userId]
-    );
+    const sortLabel =
+      sort === "rating_asc" ? "Lowest Rated First" : "Highest Rated First";
 
     const [watchlist, reviews, topMovies] = await Promise.all([
-      watchlistPromise,
-      reviewsPromise,
-      topMoviesPromise,
+      db.any(
+        `
+        SELECT m.title, m.release_year
+        FROM user_list ul
+        JOIN movies m ON ul.movie_id = m.movie_id
+        WHERE ul.user_id = $1
+        ORDER BY m.title ASC
+      `,
+        [userId]
+      ),
+
+      db.any(
+        `
+        SELECT m.title, m.release_year, r.rating, r.review_text
+        FROM reviews r
+        JOIN movies m ON r.movie_id = m.movie_id
+        WHERE r.user_id = $1
+        ORDER BY ${orderBy}
+      `,
+        [userId]
+      ),
+
+      db.any(
+        `
+        SELECT m.title, m.release_year, AVG(r.rating) AS avg_rating, COUNT(*) AS review_count
+        FROM reviews r
+        JOIN movies m ON r.movie_id = m.movie_id
+        WHERE r.user_id = $1
+        GROUP BY m.movie_id, m.title, m.release_year
+        ORDER BY AVG(r.rating) DESC, COUNT(*) DESC, m.title ASC
+        LIMIT 10
+      `,
+        [userId]
+      ),
     ]);
 
     res.render("profile", {
@@ -411,10 +315,6 @@ app.get("/profile", async (req, res) => {
       topMovies,
       sort,
       sortLabel,
-      // still placeholder profile fields
-      email: "test@example.com",
-      favoriteGenre: "Comedy",
-      bio: "This is a placeholder bio for testing the profile page layout.",
     });
   } catch (err) {
     console.error("Error loading profile:", err.message);
@@ -422,16 +322,12 @@ app.get("/profile", async (req, res) => {
   }
 });
 
-
-
-// ============================================
-// PROTECTED ROUTES (Authentication required)
-// ============================================
-
-// Discover page - Shows events from OMDB
+// Discover Page
 app.get("/discover", async (req, res) => {
   try {
     const apiKey = process.env.API_KEY;
+    const searchQuery = req.query.title || "The Avengers";
+
     if (!apiKey) {
       return res.render("discover", {
         username: req.session.user?.username,
@@ -440,13 +336,8 @@ app.get("/discover", async (req, res) => {
       });
     }
 
-    const searchQuery = req.query.title || "The Avengers"; // default search
-
     const response = await axios.get("http://www.omdbapi.com/", {
-      params: {
-        apikey: apiKey,
-        s: searchQuery, // <-- search for multiple results
-      },
+      params: { apikey: apiKey, s: searchQuery },
     });
 
     if (response.data.Response === "False") {
@@ -457,15 +348,12 @@ app.get("/discover", async (req, res) => {
       });
     }
 
-    const movies = response.data.Search || [];
-
-    // Map to your Handlebars structure
-    const results = movies.map((movie) => ({
+    const results = (response.data.Search || []).map((movie) => ({
       Title: movie.Title,
       Year: movie.Year,
       Poster:
         movie.Poster !== "N/A" ? movie.Poster : "/images/default-movie.jpg",
-      imdbID: movie.imdbID, // keep this for future DB insertion
+      imdbID: movie.imdbID,
       url: `https://www.imdb.com/title/${movie.imdbID}`,
     }));
 
@@ -484,27 +372,20 @@ app.get("/discover", async (req, res) => {
   }
 });
 
-// Add movie to DB
+// Add Movie to Watchlist
 app.post("/movies/add", async (req, res) => {
   try {
     const { title, year } = req.body;
     const userId = req.session.user.user_id;
 
-    if (!userId) {
-      return res.redirect("/login");
-    }
-
-    // Ensure movie exists + return ID
     const movie = await db.one(
       `INSERT INTO movies (title, release_year)
        VALUES ($1, $2)
-       ON CONFLICT (title)
-       DO UPDATE SET release_year = EXCLUDED.release_year
+       ON CONFLICT (title) DO UPDATE SET release_year = EXCLUDED.release_year
        RETURNING movie_id`,
       [title, year]
     );
 
-    // Add movie to user's list
     await db.none(
       `INSERT INTO user_list (user_id, movie_id)
        VALUES ($1, $2)
@@ -514,48 +395,39 @@ app.post("/movies/add", async (req, res) => {
 
     console.log(`Movie added to user ${userId}: ${title}`);
     res.redirect("/discover");
-
   } catch (err) {
     console.error("Error adding movie:", err.message);
     res.redirect("/discover");
   }
 });
 
-
-// Show review form
+// Review Routes
 app.get("/reviews/new", (req, res) => {
-  const { title } = req.query;
-
   res.render("review", {
     username: req.session.user?.username,
-    title,
+    title: req.query.title,
   });
 });
 
-// Save review to DB
 app.post("/reviews/add", async (req, res) => {
   try {
     const userId = req.session.user.user_id;
     const { title, rating, review_text } = req.body;
 
-    // Find movie in DB
     let movie = await db.oneOrNone(
-      `SELECT movie_id FROM movies WHERE title = $1`,
+      "SELECT movie_id FROM movies WHERE title = $1",
       [title]
     );
 
-    // Insert movie if not exists
     if (!movie) {
       movie = await db.one(
-        `INSERT INTO movies (title) VALUES ($1) RETURNING movie_id`,
+        "INSERT INTO movies (title) VALUES ($1) RETURNING movie_id",
         [title]
       );
     }
 
-    // Insert review
     await db.none(
-      `INSERT INTO reviews (user_id, movie_id, rating, review_text)
-       VALUES ($1, $2, $3, $4)`,
+      "INSERT INTO reviews (user_id, movie_id, rating, review_text) VALUES ($1, $2, $3, $4)",
       [userId, movie.movie_id, rating, review_text]
     );
 
@@ -567,7 +439,6 @@ app.post("/reviews/add", async (req, res) => {
   }
 });
 
-// Read reviews for a movie
 app.get("/reviews", async (req, res) => {
   try {
     const { title } = req.query;
@@ -576,23 +447,20 @@ app.get("/reviews", async (req, res) => {
       return res.redirect("/discover");
     }
 
-    // Get movie info
     const movie = await db.oneOrNone(
-      `SELECT movie_id FROM movies WHERE title = $1`,
+      "SELECT movie_id FROM movies WHERE title = $1",
       [title]
     );
 
-    let reviews = [];
-
-    if (movie) {
-      reviews = await db.any(
-        `SELECT r.rating, r.review_text, u.username
-         FROM reviews r
-         JOIN users u ON r.user_id = u.user_id
-         WHERE r.movie_id = $1`,
-        [movie.movie_id]
-      );
-    }
+    const reviews = movie
+      ? await db.any(
+          `SELECT r.rating, r.review_text, u.username
+           FROM reviews r
+           JOIN users u ON r.user_id = u.user_id
+           WHERE r.movie_id = $1`,
+          [movie.movie_id]
+        )
+      : [];
 
     res.render("read-review", {
       username: req.session.user?.username,
@@ -609,24 +477,19 @@ app.get("/reviews", async (req, res) => {
   }
 });
 
-// Logout route
+// Logout
 app.get("/logout", (req, res) => {
   const username = req.session.user?.username;
-
   req.session.destroy((err) => {
-    if (err) {
-      console.error("Error destroying session:", err);
-    }
+    if (err) console.error("Error destroying session:", err);
     console.log(`User logged out: ${username}`);
   });
-
   res.render("logout");
 });
 
 // *****************************************************
-// <!-- Section 5 : Start Server-->
+// Start Server
 // *****************************************************
-
 if (require.main === module) {
   const port = process.env.PORT || 3000;
   app.listen(port, () => {
@@ -635,5 +498,4 @@ if (require.main === module) {
   });
 }
 
-// Export the app for testing
 module.exports = app;

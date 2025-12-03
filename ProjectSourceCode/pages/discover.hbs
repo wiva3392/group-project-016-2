@@ -1,9 +1,24 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Discover - Movie Meter</title>
   <style>
+    :root {
+      --bg-primary: #23272f;
+      --bg-secondary: #282c34;
+      --bg-tertiary: #2d323b;
+      --text-primary: #ffffff;
+      --text-secondary: #8c92a4;
+      --accent-blue: #61dafb;
+      --accent-purple: #c792ea;
+      --border-color: #3d4451;
+      --hover-bg: #343943;
+      --success: #98c379;
+      --warning: #e5c07b;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -11,219 +26,127 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-      background: #0a0a0a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       min-height: 100vh;
-      color: #fff;
     }
 
     /* Navbar */
     .navbar {
-      background: rgba(15, 15, 15, 0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 16px 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 0;
       position: sticky;
       top: 0;
       z-index: 1000;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
     .navbar-content {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0 32px;
+      padding: 0 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
+      gap: 1rem;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 0.75rem;
       font-size: 1.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #58a6ff 0%, #7877c6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--accent-blue);
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: transform 0.2s;
     }
 
     .brand:hover {
-      transform: scale(1.02);
+      transform: translateY(-2px);
     }
 
-    .user-section {
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 6px;
       display: flex;
       align-items: center;
-      gap: 20px;
+      justify-content: center;
+      font-weight: bold;
     }
 
-    .welcome-text {
-      color: rgba(255, 255, 255, 0.8);
-      font-weight: 500;
-      font-size: 0.95rem;
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
     }
 
-    .btn-logout {
-      padding: 10px 20px;
-      background: rgba(88, 166, 255, 0.1);
-      border: 1px solid rgba(88, 166, 255, 0.3);
-      color: #58a6ff;
-      border-radius: 8px;
+    .nav-link {
+      color: var(--text-secondary);
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s;
     }
 
-    .btn-logout:hover {
-      background: rgba(88, 166, 255, 0.2);
-      border-color: #58a6ff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+    .nav-link:hover {
+      color: var(--accent-blue);
+      background: var(--hover-bg);
     }
 
     /* Container */
     .container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 48px 32px;
+      padding: 3rem 2rem;
     }
 
     /* Hero Section */
     .hero {
       text-align: center;
-      margin-bottom: 56px;
+      margin-bottom: 3rem;
+      animation: fadeIn 0.6s ease-out;
     }
 
-    h1 {
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero h1 {
       font-size: 3.5rem;
       font-weight: 800;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      letter-spacing: -1.5px;
     }
 
-    .subtitle {
+    .hero-subtitle {
+      color: var(--text-secondary);
       font-size: 1.2rem;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 400;
     }
 
     /* Search Section */
     .search-section {
       max-width: 800px;
-      margin: 0 auto 48px;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 32px;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      margin: 0 auto 3rem;
+      animation: slideUp 0.6s ease-out 0.2s backwards;
     }
 
-    .search-form {
-      display: flex;
-      gap: 12px;
-    }
-
-    .search-input {
-      flex: 1;
-      padding: 16px 20px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      font-size: 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: inherit;
-    }
-
-    .search-input::placeholder {
-      color: rgba(255, 255, 255, 0.4);
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: #58a6ff;
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 0 4px rgba(88, 166, 255, 0.15);
-    }
-
-    .btn-search {
-      padding: 16px 32px;
-      background: linear-gradient(135deg, #58a6ff 0%, #7877c6 100%);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 16px rgba(88, 166, 255, 0.3);
-      white-space: nowrap;
-    }
-
-    .btn-search:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(88, 166, 255, 0.4);
-    }
-
-    /* Alert */
-    .alert {
-      max-width: 800px;
-      margin: 0 auto 32px;
-      padding: 16px 20px;
-      border-radius: 12px;
-      background: rgba(255, 165, 0, 0.1);
-      border: 1px solid rgba(255, 165, 0, 0.3);
-      color: #ffa500;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .alert-info {
-      background: rgba(88, 166, 255, 0.1);
-      border-color: rgba(88, 166, 255, 0.3);
-      color: #58a6ff;
-    }
-
-    /* Movies Grid */
-    .movies-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 32px;
-    }
-
-    .movie-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    .movie-card:nth-child(1) { animation-delay: 0.05s; }
-    .movie-card:nth-child(2) { animation-delay: 0.1s; }
-    .movie-card:nth-child(3) { animation-delay: 0.15s; }
-    .movie-card:nth-child(4) { animation-delay: 0.2s; }
-    .movie-card:nth-child(5) { animation-delay: 0.25s; }
-    .movie-card:nth-child(6) { animation-delay: 0.3s; }
-
-    @keyframes fadeInUp {
+    @keyframes slideUp {
       from {
         opacity: 0;
         transform: translateY(30px);
@@ -234,10 +157,104 @@
       }
     }
 
+    .search-form {
+      display: flex;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s;
+    }
+
+    .search-form:focus-within {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 4px rgba(97, 218, 251, 0.1);
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      background: var(--bg-primary);
+    }
+
+    .btn-search {
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-search:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(97, 218, 251, 0.3);
+    }
+
+    .btn-search:active {
+      transform: translateY(0);
+    }
+
+    /* Alert */
+    .alert {
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      background: rgba(229, 192, 123, 0.1);
+      border: 1px solid rgba(229, 192, 123, 0.3);
+      color: var(--warning);
+      animation: slideUp 0.6s ease-out 0.3s backwards;
+    }
+
+    .alert-info {
+      background: rgba(97, 218, 251, 0.1);
+      border-color: rgba(97, 218, 251, 0.3);
+      color: var(--accent-blue);
+    }
+
+    /* Movies Grid */
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      animation: fadeIn 0.6s ease-out 0.4s backwards;
+    }
+
+    .movie-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
     .movie-card:hover {
       transform: translateY(-8px);
-      border-color: rgba(88, 166, 255, 0.3);
-      box-shadow: 0 12px 48px rgba(88, 166, 255, 0.2);
+      border-color: var(--accent-blue);
+      box-shadow: 0 12px 40px rgba(97, 218, 251, 0.2);
     }
 
     .movie-poster {
@@ -245,101 +262,112 @@
       height: 400px;
       object-fit: cover;
       display: block;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid var(--border-color);
+      transition: transform 0.3s;
+    }
+
+    .movie-card:hover .movie-poster {
+      transform: scale(1.05);
     }
 
     .movie-body {
-      padding: 24px;
+      padding: 1.5rem;
     }
 
     .movie-title {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 0.5rem;
       line-height: 1.3;
-      letter-spacing: -0.3px;
     }
 
     .movie-year {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.95rem;
-      margin-bottom: 20px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
     }
 
     .movie-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 0.75rem;
     }
 
     .btn {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      padding: 0.625rem 1rem;
+      border: 1px solid;
+      border-radius: 6px;
+      font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s;
       text-decoration: none;
       display: inline-block;
       font-family: inherit;
+      background: transparent;
     }
 
     .btn-add {
-      background: rgba(46, 204, 113, 0.15);
-      border: 1px solid rgba(46, 204, 113, 0.3);
-      color: #2ecc71;
+      border-color: var(--success);
+      color: var(--success);
     }
 
     .btn-add:hover {
-      background: rgba(46, 204, 113, 0.25);
-      border-color: #2ecc71;
+      background: rgba(152, 195, 121, 0.1);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
     }
 
     .btn-review {
-      background: rgba(155, 89, 182, 0.15);
-      border: 1px solid rgba(155, 89, 182, 0.3);
-      color: #9b59b6;
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
     }
 
     .btn-review:hover {
-      background: rgba(155, 89, 182, 0.25);
-      border-color: #9b59b6;
+      background: rgba(199, 146, 234, 0.1);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
     }
 
     .btn-read {
-      background: rgba(88, 166, 255, 0.15);
-      border: 1px solid rgba(88, 166, 255, 0.3);
-      color: #58a6ff;
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
     }
 
     .btn-read:hover {
-      background: rgba(88, 166, 255, 0.25);
-      border-color: #58a6ff;
+      background: rgba(97, 218, 251, 0.1);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      border: 1px solid var(--border-color);
     }
 
     @media (max-width: 768px) {
       .navbar-content {
-        padding: 0 20px;
+        padding: 0 1rem;
       }
 
       .container {
-        padding: 32px 20px;
+        padding: 2rem 1rem;
       }
 
-      h1 {
+      .hero h1 {
         font-size: 2.5rem;
-      }
-
-      .search-section {
-        padding: 24px;
       }
 
       .search-form {
@@ -348,7 +376,11 @@
 
       .movies-grid {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 1.5rem;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
       }
     }
   </style>
@@ -357,12 +389,13 @@
   <nav class="navbar">
     <div class="navbar-content">
       <a href="/" class="brand">
-        <span>🎬</span>
+        <div class="brand-icon">M</div>
         <span>Movie Meter</span>
       </a>
-      <div class="user-section">
-        <span class="welcome-text">{{username}}</span>
-        <a href="/logout" class="btn-logout">Sign Out</a>
+      <div class="nav-links">
+        <span class="nav-link">{{username}}</span>
+        <a href="/profile" class="nav-link">Profile</a>
+        <a href="/logout" class="nav-link">Sign Out</a>
       </div>
     </div>
   </nav>
@@ -370,7 +403,7 @@
   <div class="container">
     <div class="hero">
       <h1>Discover Movies</h1>
-      <p class="subtitle">Find and review your favorite films</p>
+      <p class="hero-subtitle">Find and review your favorite films</p>
     </div>
 
     <div class="search-section">
@@ -381,9 +414,8 @@
     </div>
 
     {{#if message}}
-    <div class="alert">
-      <span>ℹ️</span>
-      <span>{{message}}</span>
+    <div class="alert{{#if results}} alert-info{{/if}}">
+      {{message}}
     </div>
     {{/if}}
 
@@ -400,7 +432,7 @@
             <form action="/movies/add" method="POST" style="display: inline;">
               <input type="hidden" name="title" value="{{Title}}">
               <input type="hidden" name="year" value="{{Year}}">
-              <button type="submit" class="btn btn-add">Add Movie</button>
+              <button type="submit" class="btn btn-add">Add to List</button>
             </form>
             
             <form action="/reviews/new" method="GET" style="display: inline;">
@@ -415,10 +447,12 @@
       {{/each}}
     </div>
     {{else}}
-    <div class="alert alert-info">
-      <span>🎬</span>
-      <span>No movies found. Try searching for your favorite films!</span>
+    {{#unless message}}
+    <div class="empty-state">
+      <div class="empty-icon">◉</div>
+      <p>Search for movies to get started</p>
     </div>
+    {{/unless}}
     {{/if}}
   </div>
 </body>

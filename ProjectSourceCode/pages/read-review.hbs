@@ -1,123 +1,343 @@
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reviews - Movie Meter</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', sans-serif; background: #0a0a0a; min-height: 100vh;
-      color: #fff; } .navbar { background: rgba(15, 15, 15, 0.8);
-      backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255,
-      0.1); padding: 16px 0; position: sticky; top: 0; z-index: 1000;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5); } .navbar-content { max-width:
-      1200px; margin: 0 auto; padding: 0 32px; display: flex; justify-content:
-      space-between; align-items: center; } .brand { display: flex; align-items:
-      center; gap: 12px; font-size: 1.5rem; font-weight: 700; background:
-      linear-gradient(135deg, #58a6ff 0%, #7877c6 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; text-decoration: none; } .welcome-text { color:
-      rgba(255, 255, 255, 0.8); font-weight: 500; } .container { max-width:
-      1200px; margin: 0 auto; padding: 56px 32px; } .header { text-align:
-      center; margin-bottom: 56px; } h2 { font-size: 3rem; font-weight: 800;
-      margin-bottom: 16px; background: linear-gradient(135deg, #fff 0%,
-      rgba(255, 255, 255, 0.7) 100%); -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent; background-clip: text;
-      letter-spacing: -1px; } .movie-title-badge { display: inline-block;
-      background: rgba(88, 166, 255, 0.15); border: 1px solid rgba(88, 166, 255,
-      0.3); color: #58a6ff; padding: 12px 24px; border-radius: 12px; font-size:
-      1.3rem; font-weight: 600; } .no-reviews { max-width: 600px; margin: 0
-      auto; text-align: center; padding: 64px 32px; background: rgba(255, 255,
-      255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255,
-      255, 0.1); border-radius: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      } .no-reviews-icon { font-size: 5rem; margin-bottom: 24px; filter:
-      grayscale(0.3); } .no-reviews-text { color: rgba(255, 255, 255, 0.7);
-      font-size: 1.2rem; line-height: 1.6; } .reviews-grid { display: grid; gap:
-      24px; margin-bottom: 48px; } .review-card { background: rgba(255, 255,
-      255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255,
-      255, 0.1); padding: 32px; border-radius: 16px; box-shadow: 0 4px 16px
-      rgba(0, 0, 0, 0.3); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
-      .review-card:nth-child(1) { animation-delay: 0.05s; }
-      .review-card:nth-child(2) { animation-delay: 0.1s; }
-      .review-card:nth-child(3) { animation-delay: 0.15s; }
-      .review-card:nth-child(4) { animation-delay: 0.2s; } @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); } to { opacity: 1;
-      transform: translateY(0); } } .review-card:hover { transform:
-      translateY(-4px); border-color: rgba(88, 166, 255, 0.2); box-shadow: 0 8px
-      32px rgba(88, 166, 255, 0.15); } .review-header { display: flex;
-      justify-content: space-between; align-items: center; margin-bottom: 20px;
-      flex-wrap: wrap; gap: 12px; } .rating-badge { display: inline-flex;
-      align-items: center; gap: 8px; background: linear-gradient(135deg, #58a6ff
-      0%, #7877c6 100%); color: white; padding: 10px 20px; border-radius: 10px;
-      font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(88, 166,
-      255, 0.3); } .review-text { color: rgba(255, 255, 255, 0.85); font-size:
-      1.05rem; line-height: 1.7; margin-bottom: 20px; padding: 20px; background:
-      rgba(255, 255, 255, 0.03); border-radius: 12px; border-left: 3px solid
-      #58a6ff; } .review-author { color: rgba(255, 255, 255, 0.5); font-size:
-      0.95rem; font-style: italic; display: flex; align-items: center; gap: 8px;
-      } .review-author::before { content: '✍️'; font-style: normal; }
-      .back-section { text-align: center; margin-top: 48px; } .btn-back {
-      display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px;
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255,
-      255, 0.15); color: rgba(255, 255, 255, 0.9); border-radius: 12px;
-      font-size: 1rem; font-weight: 600; text-decoration: none; transition: all
-      0.3s cubic-bezier(0.4, 0, 0.2, 1); } .btn-back:hover { background:
-      rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); }
-      @media (max-width: 768px) { .container { padding: 40px 20px; } h2 {
-      font-size: 2.5rem; } .navbar-content { padding: 0 20px; } .review-card {
-      padding: 24px; } .review-header { flex-direction: column; align-items:
-      flex-start; } }
-    </style>
-  </head>
-  <body>
-    <nav class="navbar">
-      <div class="navbar-content">
-        <a href="/" class="brand">
-          <span>🎬</span>
-          <span>Movie Meter</span>
-        </a>
-        <span class="welcome-text">{{username}}</span>
-      </div>
-    </nav>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews - Movie Meter</title>
+  <style>
+    :root {
+      --bg-primary: #23272f;
+      --bg-secondary: #282c34;
+      --bg-tertiary: #2d323b;
+      --text-primary: #ffffff;
+      --text-secondary: #8c92a4;
+      --accent-blue: #61dafb;
+      --accent-purple: #c792ea;
+      --border-color: #3d4451;
+      --hover-bg: #343943;
+    }
 
-    <div class="container">
-      <div class="header">
-        <h2>Reviews</h2>
-        <div class="movie-title-badge">{{title}}</div>
-      </div>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      {{#if message}}
-        <div class="no-reviews">
-          <div class="no-reviews-icon">🎬</div>
-          <p class="no-reviews-text">{{message}}</p>
-        </div>
-      {{/if}}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
 
-      {{#if reviews.length}}
-        <div class="reviews-grid">
-          {{#each reviews}}
-            <div class="review-card">
-              <div class="review-header">
-                <div class="rating-badge">
-                  <span>⭐</span>
-                  <span>{{rating}}/10</span>
-                </div>
-                <div class="review-author">{{username}}</div>
-              </div>
-              <div class="review-text">{{review_text}}</div>
-            </div>
-          {{/each}}
-        </div>
-      {{/if}}
+    /* Navbar */
+    .navbar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
 
-      <div class="back-section">
-        <a href="/discover" class="btn-back">
-          <span>←</span>
-          <span>Back to Discover</span>
-        </a>
-      </div>
+    .navbar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+
+    .brand:hover {
+      transform: translateY(-2px);
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .welcome-text {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .movie-badge {
+      display: inline-block;
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .empty-state {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      animation: slideUp 0.6s ease-out 0.2s backwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    .empty-text {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .reviews-grid {
+      display: grid;
+      gap: 1.5rem;
+      animation: fadeIn 0.6s ease-out 0.3s backwards;
+    }
+
+    .review-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      border-radius: 12px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .review-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      transform: scaleY(0);
+      transition: transform 0.3s;
+    }
+
+    .review-card:hover {
+      transform: translateX(8px);
+      border-color: var(--accent-blue);
+      box-shadow: 0 8px 32px rgba(97, 218, 251, 0.15);
+    }
+
+    .review-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      padding: 0.625rem 1rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .review-author {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .review-text {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      padding: 1rem;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent-blue);
+    }
+
+    .back-section {
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: var(--hover-bg);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 2rem 1rem;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+      }
+
+      .navbar-content {
+        padding: 0 1rem;
+      }
+
+      .review-card {
+        padding: 1.5rem;
+      }
+
+      .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="/" class="brand">
+        <div class="brand-icon">M</div>
+        <span>Movie Meter</span>
+      </a>
+      <span class="welcome-text">{{username}}</span>
     </div>
-  </body>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h2>Reviews</h2>
+      <div class="movie-badge">{{title}}</div>
+    </div>
+
+    {{#if message}}
+    <div class="empty-state">
+      <div class="empty-icon">◎</div>
+      <p class="empty-text">{{message}}</p>
+    </div>
+    {{/if}}
+
+    {{#if reviews.length}}
+    <div class="reviews-grid">
+      {{#each reviews}}
+      <div class="review-card">
+        <div class="review-header">
+          <div class="rating-badge">
+            <span>★</span>
+            <span>{{rating}} / 10</span>
+          </div>
+          <div class="review-author">— {{username}}</div>
+        </div>
+        <div class="review-text">{{review_text}}</div>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    <div class="back-section">
+      <a href="/discover" class="btn-back">
+        <span>←</span>
+        <span>Back to Discover</span>
+      </a>
+    </div>
+  </div>
+</body>
 </html>

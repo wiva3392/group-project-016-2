@@ -4,104 +4,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - Movie Meter</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', sans-serif; background: linear-gradient(135deg,
-      #0f0c29 0%, #302b63 50%, #24243e 100%); min-height: 100vh; display: flex;
-      align-items: center; justify-content: center; padding: 20px; position:
-      relative; overflow: hidden; } body::before { content: ''; position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%; background:
-      radial-gradient(circle at 80% 20%, rgba(88, 166, 255, 0.1) 0%, transparent
-      50%), radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%,
-      transparent 50%); animation: gradientShift 12s ease infinite alternate;
-      pointer-events: none; } @keyframes gradientShift { 0% { opacity: 0.8;
-      transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
-      .particle { position: fixed; width: 2px; height: 2px; background: rgba(88,
-      166, 255, 0.6); border-radius: 50%; pointer-events: none; animation: float
-      25s infinite ease-in-out; } @keyframes float { 0%, 100% { transform:
-      translateY(0) translateX(0); opacity: 0; } 10% { opacity: 1; } 90% {
-      opacity: 1; } 100% { transform: translateY(-100vh) translateX(100px);
-      opacity: 0; } } .register-container { background: rgba(255, 255, 255,
-      0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255,
-      0.1); padding: 48px; border-radius: 24px; box-shadow: 0 8px 32px rgba(0,
-      0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1); width: 100%;
-      max-width: 440px; animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative; z-index: 1; } @keyframes slideIn { from { opacity: 0;
-      transform: translateY(40px) scale(0.95); } to { opacity: 1; transform:
-      translateY(0) scale(1); } } .logo { text-align: center; margin-bottom:
-      40px; } .logo-icon { font-size: 3.5rem; margin-bottom: 16px; display:
-      inline-block; animation: pulse 3s ease-in-out infinite; filter:
-      drop-shadow(0 0 20px rgba(88, 166, 255, 0.5)); } @keyframes pulse { 0%,
-      100% { transform: scale(1); } 50% { transform: scale(1.05); } } .logo h1 {
-      font-size: 2rem; font-weight: 700; background: linear-gradient(135deg,
-      #58a6ff 0%, #7877c6 100%); -webkit-background-clip: text;
+      :root { --bg-primary: #1a1f2e; --bg-secondary: #23272f; --bg-tertiary:
+      #282c34; --text-primary: #ffffff; --text-secondary: #8c92a4;
+      --accent-blue: #61dafb; --accent-purple: #c792ea; --border-color: #3d4451;
+      --error: #e06c75; } * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      'Roboto', sans-serif; background: var(--bg-primary); min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding:
+      20px; position: relative; overflow: hidden; } /* Animated Background */
+      body::before { content: ''; position: fixed; top: -50%; left: -50%; width:
+      200%; height: 200%; background: radial-gradient(circle at 30% 40%,
+      rgba(97, 218, 251, 0.05) 0%, transparent 50%), radial-gradient(circle at
+      70% 60%, rgba(199, 146, 234, 0.05) 0%, transparent 50%); animation: rotate
+      25s linear infinite; pointer-events: none; } @keyframes rotate { from {
+      transform: rotate(0deg); } to { transform: rotate(360deg); } } /* Floating
+      Dots */ .floating-dot { position: fixed; width: 4px; height: 4px;
+      background: rgba(97, 218, 251, 0.4); border-radius: 50%; pointer-events:
+      none; animation: float 20s ease-in-out infinite; } @keyframes float { 0%,
+      100% { transform: translate(0, 0); opacity: 0.3; } 50% { transform:
+      translate(50px, -50px); opacity: 0.8; } } .register-container {
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      padding: 3rem; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0,
+      0.5); width: 100%; max-width: 440px; position: relative; z-index: 1;
+      animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); } @keyframes
+      slideIn { from { opacity: 0; transform: translateY(40px); } to { opacity:
+      1; transform: translateY(0); } } .logo { text-align: center;
+      margin-bottom: 2.5rem; } .logo-icon { width: 56px; height: 56px; margin: 0
+      auto 1rem; background: linear-gradient(135deg, var(--accent-blue),
+      var(--accent-purple)); border-radius: 12px; display: flex; align-items:
+      center; justify-content: center; font-size: 2rem; font-weight: bold;
+      animation: pulse 3s ease-in-out infinite; position: relative; } @keyframes
+      pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); }
+      } .logo-icon::after { content: ''; position: absolute; inset: -3px;
+      border-radius: 12px; background: linear-gradient(135deg,
+      var(--accent-blue), var(--accent-purple)); opacity: 0.3; filter:
+      blur(6px); z-index: -1; } .logo h1 { font-size: 2rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue),
+      var(--accent-purple)); -webkit-background-clip: text;
       -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 8px; letter-spacing: -0.5px; } .logo p { color: rgba(255,
-      255, 255, 0.6); font-size: 0.95rem; font-weight: 400; } .alert {
-      background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73,
-      0.3); color: #ff6b6b; padding: 14px 18px; border-radius: 12px;
-      margin-bottom: 24px; font-size: 0.9rem; animation: shake 0.5s
-      cubic-bezier(0.36, 0.07, 0.19, 0.97); display: flex; align-items: center;
-      gap: 10px; } .alert::before { content: '⚠'; font-size: 1.2rem; }
+      margin-bottom: 0.5rem; } .logo p { color: var(--text-secondary);
+      font-size: 0.95rem; } .alert { background: rgba(224, 108, 117, 0.1);
+      border: 1px solid rgba(224, 108, 117, 0.3); color: var(--error); padding:
+      1rem; border-radius: 8px; margin-bottom: 1.5rem; animation: shake 0.5s; }
       @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform:
-      translateX(-8px); } 75% { transform: translateX(8px); } } .form-group {
-      margin-bottom: 24px; } label { display: block; margin-bottom: 10px; color:
-      rgba(255, 255, 255, 0.9); font-weight: 500; font-size: 0.9rem;
-      letter-spacing: 0.3px; } input { width: 100%; padding: 14px 16px; border:
-      1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 1rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(255,
-      255, 255, 0.05); color: #fff; font-family: inherit; } input::placeholder {
-      color: rgba(255, 255, 255, 0.4); } input:focus { outline: none;
-      border-color: #58a6ff; background: rgba(255, 255, 255, 0.08); box-shadow:
-      0 0 0 4px rgba(88, 166, 255, 0.15), 0 1px 3px rgba(0, 0, 0, 0.2);
-      transform: translateY(-1px); } .help-text { font-size: 0.85rem; color:
-      rgba(255, 255, 255, 0.5); margin-top: 8px; display: flex; align-items:
-      center; gap: 6px; padding-left: 4px; } .btn { width: 100%; padding: 14px;
-      background: linear-gradient(135deg, #58a6ff 0%, #7877c6 100%); color:
-      white; border: none; border-radius: 12px; font-size: 1rem; font-weight:
-      600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-top: 8px; position: relative; overflow: hidden; box-shadow: 0 4px
-      16px rgba(88, 166, 255, 0.3); } .btn::before { content: ''; position:
-      absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,
-      255, 255, 0.2); border-radius: 50%; transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s; } .btn:hover::before { width: 300px;
-      height: 300px; } .btn:hover { transform: translateY(-2px); box-shadow: 0
-      8px 24px rgba(88, 166, 255, 0.4); } .btn:active { transform:
-      translateY(0); } .footer-text { text-align: center; margin-top: 32px;
-      color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; } .footer-text a {
-      color: #58a6ff; text-decoration: none; font-weight: 600; transition: all
-      0.3s ease; position: relative; } .footer-text a::after { content: '';
+      translateX(-10px); } 75% { transform: translateX(10px); } } .form-group {
+      margin-bottom: 1.5rem; } label { display: block; margin-bottom: 0.5rem;
+      color: var(--text-primary); font-weight: 500; font-size: 0.9rem; } input {
+      width: 100%; padding: 0.875rem 1rem; border: 1px solid
+      var(--border-color); border-radius: 8px; font-size: 1rem; background:
+      var(--bg-tertiary); color: var(--text-primary); transition: all 0.2s;
+      font-family: inherit; } input::placeholder { color: var(--text-secondary);
+      } input:focus { outline: none; border-color: var(--accent-blue);
+      box-shadow: 0 0 0 4px rgba(97, 218, 251, 0.1); background:
+      var(--bg-primary); } .password-strength { margin-top: 0.5rem; display:
+      flex; gap: 4px; height: 4px; } .strength-bar { flex: 1; background:
+      var(--border-color); border-radius: 2px; transition: background 0.3s; }
+      .strength-bar.active { background: var(--accent-blue); } .help-text {
+      font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;
+      display: flex; align-items: center; gap: 0.5rem; } .btn { width: 100%;
+      padding: 1rem; background: linear-gradient(135deg, var(--accent-blue),
+      var(--accent-purple)); color: white; border: none; border-radius: 8px;
+      font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+      margin-top: 0.5rem; position: relative; overflow: hidden; } .btn::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height:
+      100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255,
+      0.2), transparent); transition: left 0.5s; } .btn:hover::before { left:
+      100%; } .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px
+      rgba(97, 218, 251, 0.3); } .btn:active { transform: translateY(0); }
+      .footer-text { text-align: center; margin-top: 2rem; color:
+      var(--text-secondary); font-size: 0.9rem; } .footer-text a { color:
+      var(--accent-blue); text-decoration: none; font-weight: 600; transition:
+      color 0.2s; position: relative; } .footer-text a::after { content: '';
       position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
-      background: #58a6ff; transition: width 0.3s ease; } .footer-text
-      a:hover::after { width: 100%; } .footer-text a:hover { color: #7877c6; }
-      @media (max-width: 480px) { .register-container { padding: 32px 24px; }
-      .logo h1 { font-size: 1.75rem; } }
+      background: var(--accent-blue); transition: width 0.3s; } .footer-text
+      a:hover { color: var(--accent-purple); } .footer-text a:hover::after {
+      width: 100%; } @media (max-width: 480px) { .register-container { padding:
+      2rem 1.5rem; } .logo h1 { font-size: 1.75rem; } }
     </style>
   </head>
   <body>
-    <div class="particle" style="left: 15%; animation-delay: 0s;"></div>
-    <div class="particle" style="left: 25%; animation-delay: 3s;"></div>
-    <div class="particle" style="left: 35%; animation-delay: 6s;"></div>
-    <div class="particle" style="left: 45%; animation-delay: 2s;"></div>
-    <div class="particle" style="left: 55%; animation-delay: 5s;"></div>
-    <div class="particle" style="left: 65%; animation-delay: 1s;"></div>
-    <div class="particle" style="left: 75%; animation-delay: 4s;"></div>
-    <div class="particle" style="left: 85%; animation-delay: 7s;"></div>
+    <!-- Floating Dots -->
+    <div
+      class="floating-dot"
+      style="left: 10%; top: 20%; animation-delay: 0s;"
+    ></div>
+    <div
+      class="floating-dot"
+      style="left: 80%; top: 30%; animation-delay: 2s;"
+    ></div>
+    <div
+      class="floating-dot"
+      style="left: 60%; top: 70%; animation-delay: 4s;"
+    ></div>
+    <div
+      class="floating-dot"
+      style="left: 30%; top: 80%; animation-delay: 6s;"
+    ></div>
 
     <div class="register-container">
       <div class="logo">
-        <div class="logo-icon">🎬</div>
+        <div class="logo-icon">M</div>
         <h1>Movie Meter</h1>
         <p>Join our movie community today</p>
       </div>
 
       {{#if message}}
-        <div class="alert">
-          {{message}}
-        </div>
+        <div class="alert">{{message}}</div>
       {{/if}}
 
-      <form action="/register" method="POST">
+      <form action="/register" method="POST" id="registerForm">
         <div class="form-group">
           <label for="username">Username</label>
           <input
@@ -125,10 +136,16 @@
             placeholder="Create a secure password"
             autocomplete="new-password"
           />
-          <small class="help-text">
+          <div class="password-strength" id="strengthIndicator">
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+          </div>
+          <div class="help-text">
             <span>🔒</span>
             <span>Password must be at least 6 characters long</span>
-          </small>
+          </div>
         </div>
 
         <button type="submit" class="btn">Create Account</button>
@@ -139,5 +156,19 @@
         <a href="/login">Sign in here</a>
       </p>
     </div>
+
+    <script>
+      // Password strength indicator const passwordInput =
+      document.getElementById('password'); const strengthBars =
+      document.querySelectorAll('.strength-bar');
+      passwordInput.addEventListener('input', (e) => { const password =
+      e.target.value; const length = password.length; // Reset all bars
+      strengthBars.forEach(bar => bar.classList.remove('active')); // Activate
+      bars based on length if (length >= 3)
+      strengthBars[0].classList.add('active'); if (length >= 6)
+      strengthBars[1].classList.add('active'); if (length >= 9)
+      strengthBars[2].classList.add('active'); if (length >= 12)
+      strengthBars[3].classList.add('active'); });
+    </script>
   </body>
 </html>
