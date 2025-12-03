@@ -25,6 +25,10 @@ const hbs = handlebars.create({
   defaultLayout: false,
 });
 
+hbs.handlebars.registerHelper("eq", function(a , b) {
+  return a === b;
+});
+
 // Build a connection string:
 // - Prefer DATABASE_URL (Render, or local .env).
 // - Otherwise, build from POSTGRES_* env vars.
@@ -106,6 +110,19 @@ db.connect()
       )
     `);
     console.log("Reviews table ready");
+
+    // Create user_list join table
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS user_list (
+        list_id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        movie_id INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+        FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
+        UNIQUE (user_id, movie_id)
+      )
+    `);
+    console.log("User List table ready");
 
     obj.done();
   })
@@ -298,6 +315,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+
+
 // ============================================
 // AUTHENTICATION MIDDLEWARE
 // ============================================
@@ -313,6 +333,96 @@ const auth = (req, res, next) => {
 
 // Apply authentication to all routes below
 app.use(auth);
+
+// Profile page - show user's watchlist (first step)
+// Profile page - Watchlist + My Reviews + Top Movies
+app.get("/profile", async (req, res) => {
+  try {
+    const userId = req.session.user.user_id;
+
+    // --- Sorting for "My Reviews" ---
+    const sort = req.query.sort || "rating_desc"; // default: highest rated first
+
+    // Whitelist mapping for ORDER BY clause
+    let reviewsOrderBy;
+    let sortLabel;
+    switch (sort) {
+      case "rating_asc":
+        reviewsOrderBy = "r.rating ASC, m.title ASC";
+        sortLabel = "Lowest Rated First";
+        break;
+      case "rating_desc":
+      default:
+        reviewsOrderBy = "r.rating DESC, m.title ASC";
+        sortLabel = "Highest Rated First";
+        break;
+    }
+
+    // --- Watchlist query ---
+    const watchlistPromise = db.any(
+      `SELECT m.title AS title, m.release_year AS release_year
+       FROM user_list ul
+       JOIN movies m ON ul.movie_id = m.movie_id
+       WHERE ul.user_id = $1
+       ORDER BY m.title ASC`,
+      [userId]
+    );
+
+    // --- All reviews by this user (with ordering) ---
+    const reviewsPromise = db.any(
+      `SELECT 
+         m.title        AS title,
+         m.release_year AS release_year,
+         r.rating       AS rating,
+         r.review_text  AS review_text
+       FROM reviews r
+       JOIN movies m ON r.movie_id = m.movie_id
+       WHERE r.user_id = $1
+       ORDER BY ${reviewsOrderBy}`,
+      [userId]
+    );
+
+    // --- Top 10 movies this user has reviewed (by avg rating desc) ---
+    const topMoviesPromise = db.any(
+      `SELECT 
+         m.title        AS title,
+         m.release_year AS release_year,
+         AVG(r.rating)  AS avg_rating,
+         COUNT(*)       AS review_count
+       FROM reviews r
+       JOIN movies m ON r.movie_id = m.movie_id
+       WHERE r.user_id = $1
+       GROUP BY m.movie_id, m.title, m.release_year
+       ORDER BY AVG(r.rating) DESC, COUNT(*) DESC, m.title ASC
+       LIMIT 10`,
+      [userId]
+    );
+
+    const [watchlist, reviews, topMovies] = await Promise.all([
+      watchlistPromise,
+      reviewsPromise,
+      topMoviesPromise,
+    ]);
+
+    res.render("profile", {
+      username: req.session.user.username,
+      watchlist,
+      reviews,
+      topMovies,
+      sort,
+      sortLabel,
+      // still placeholder profile fields
+      email: "test@example.com",
+      favoriteGenre: "Comedy",
+      bio: "This is a placeholder bio for testing the profile page layout.",
+    });
+  } catch (err) {
+    console.error("Error loading profile:", err.message);
+    res.redirect("/discover");
+  }
+});
+
+
 
 // ============================================
 // PROTECTED ROUTES (Authentication required)
@@ -378,22 +488,39 @@ app.get("/discover", async (req, res) => {
 app.post("/movies/add", async (req, res) => {
   try {
     const { title, year } = req.body;
+    const userId = req.session.user.user_id;
 
-    // Insert movie into DB, avoid duplicates
-    await db.none(
+    if (!userId) {
+      return res.redirect("/login");
+    }
+
+    // Ensure movie exists + return ID
+    const movie = await db.one(
       `INSERT INTO movies (title, release_year)
        VALUES ($1, $2)
-       ON CONFLICT (title) DO NOTHING`,
+       ON CONFLICT (title)
+       DO UPDATE SET release_year = EXCLUDED.release_year
+       RETURNING movie_id`,
       [title, year]
     );
 
-    console.log(`Movie added: ${title}`);
+    // Add movie to user's list
+    await db.none(
+      `INSERT INTO user_list (user_id, movie_id)
+       VALUES ($1, $2)
+       ON CONFLICT (user_id, movie_id) DO NOTHING`,
+      [userId, movie.movie_id]
+    );
+
+    console.log(`Movie added to user ${userId}: ${title}`);
     res.redirect("/discover");
+
   } catch (err) {
     console.error("Error adding movie:", err.message);
     res.redirect("/discover");
   }
 });
+
 
 // Show review form
 app.get("/reviews/new", (req, res) => {
