@@ -48,20 +48,23 @@
       Title */ .section-title { font-size: 1.8rem; font-weight: 700;
       margin-bottom: 1.5rem; color: var(--text-primary); } /* Top 10 Section */
       .top10-section { margin-bottom: 4rem; } .top10-grid { display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem;
-      margin-bottom: 1rem; } .top10-card { position: relative; aspect-ratio:
-      2/3; border-radius: 8px; overflow: hidden; cursor: pointer; transition:
-      all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-secondary); }
-      .top10-card:hover { transform: scale(1.05); z-index: 10; } .top10-number {
-      position: absolute; bottom: -5px; left: -5px; font-size: 5rem;
-      font-weight: 900; color: white; -webkit-text-stroke: 2px
+      grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+      .top10-card { position: relative; aspect-ratio: 2/3; border-radius: 8px;
+      overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,
+      0, 0.2, 1); } /* Only raise z-index on hover, no scaling of the whole card
+      */ .top10-card:hover { z-index: 10; } .top10-number { position: absolute;
+      bottom: -10px; left: -10px; font-size: 4rem; /* smaller number */
+      font-weight: 900; color: white; -webkit-text-stroke: 3px
       var(--bg-primary); z-index: 1; line-height: 1; pointer-events: none; }
       .top10-poster { width: 100%; height: 100%; object-fit: cover; display:
-      block; } .top10-poster.loading { background: linear-gradient(90deg,
-      var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
-      background-size: 200% 100%; animation: loading 1.5s infinite; } @keyframes
-      loading { 0% { background-position: 200% 0; } 100% { background-position:
-      -200% 0; } } .top10-overlay { position: absolute; inset: 0; background:
+      block; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* poster
+      animation */ } /* Scale only the poster on hover */ .top10-card:hover
+      .top10-poster { transform: scale(1.05); } .top10-poster.loading {
+      background: linear-gradient(90deg, var(--bg-secondary) 25%,
+      var(--bg-tertiary) 50%, var(--bg-secondary) 75%); background-size: 200%
+      100%; animation: loading 1.5s infinite; } @keyframes loading { 0% {
+      background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      .top10-overlay { position: absolute; inset: 0; background:
       linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 50%); display: flex;
       flex-direction: column; justify-content: flex-end; padding: 1rem; opacity:
       0; transition: opacity 0.3s; } .top10-card:hover .top10-overlay { opacity:
@@ -104,15 +107,14 @@
       background: linear-gradient(135deg, var(--bg-secondary),
       var(--bg-tertiary)); display: flex; align-items: center; justify-content:
       center; color: var(--text-secondary); font-size: 3rem; } @media
-      (max-width: 1024px) { .top10-grid { grid-template-columns:
-      repeat(auto-fill, minmax(140px, 1fr)); } .movies-grid {
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } } @media
-      (max-width: 768px) { .navbar-content, .container { padding-left: 1.5rem;
-      padding-right: 1.5rem; } .container { padding-top: 5rem; } .top10-grid {
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-      .top10-number { font-size: 3.5rem; } .movies-grid { grid-template-columns:
-      repeat(auto-fill, minmax(140px, 1fr)); } .nav-links { gap: 1rem; }
-      .nav-link { font-size: 0.85rem; } }
+      (max-width: 1024px) { .top10-grid { grid-template-columns: repeat(3, 1fr);
+      } .movies-grid { grid-template-columns: repeat(auto-fill, minmax(160px,
+      1fr)); } } @media (max-width: 768px) { .navbar-content, .container {
+      padding-left: 1.5rem; padding-right: 1.5rem; } .container { padding-top:
+      5rem; } .top10-grid { grid-template-columns: repeat(2, 1fr); }
+      .top10-number { font-size: 3rem; /* smaller on mobile */ } .movies-grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } .nav-links
+      { gap: 1rem; } .nav-link { font-size: 0.85rem; } }
     </style>
   </head>
   <body>
@@ -158,7 +160,8 @@
             <div class="top10-grid">
               {{#each top10Movies}}
                 <div class="top10-card">
-                  <div class="top10-number">{{@index}}</div>
+                  <!-- use helper so it shows 1–10 instead of 0–9 -->
+                  <div class="top10-number">{{inc @index}}</div>
                   {{#if Poster}}
                     <img
                       src="{{Poster}}"
@@ -338,7 +341,7 @@
       document.querySelectorAll('img').forEach(img => {
       img.addEventListener('error', function() { this.style.display = 'none';
       const placeholder = document.createElement('div'); placeholder.className =
-      'no-poster'; placeholder.textContent = '?';
+      'no-poster'; placeholder.textContent = '🎬';
       this.parentElement.insertBefore(placeholder, this); }); });
     </script>
   </body>

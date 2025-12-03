@@ -15,6 +15,11 @@ const app = express();
 // *****************************************************
 // Handlebars Configuration
 // *****************************************************
+const hbs = require("hbs"); // or your view engine wrapper
+
+hbs.registerHelper("inc", function (value) {
+  return parseInt(value, 10) + 1;
+});
 const hbs = handlebars.create({
   extname: "hbs",
   layoutsDir: false,
@@ -280,12 +285,10 @@ app.post("/register", async (req, res) => {
     req.session.save();
 
     return isJsonRequest(req)
-      ? res
-          .status(200)
-          .json({
-            message: "User registered successfully",
-            username: newUser.username,
-          })
+      ? res.status(200).json({
+          message: "User registered successfully",
+          username: newUser.username,
+        })
       : res.redirect("/discover");
   } catch (err) {
     console.error("Registration failed:", err);
