@@ -1,0 +1,6 @@
+Meeting 1
+In the first meeting, the team confirmed that the database setup was completed, including table structures for users, movies, and reviews. We assigned roles for the next development phase:
+One member will handle the static pages (Home, Login, Register).
+Two member will work on login/logout flow, including password hashing and test database queries.
+A third member will research and test external movie APIs to determine which one best fits our needs for data retrieval.
+The group also discussed the initial plan for the backend architecture, outlining routes, controllers, and data flow. Everyone left with clear deliverables to bring to the second meeting.
