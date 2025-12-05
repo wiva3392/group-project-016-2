@@ -1,0 +1,20 @@
+Release 2 — Version 0.0.2 → 0.0.3
+0.0.3 (2025-11-07)
+Login system functional + API selected
+Upgrade Steps
+Reinstall dependencies if using Node fetch or axios for API.
+Breaking Changes
+None.
+New Features
+Completed login/logout functionality with hashed passwords.
+Connected database tables to backend auth routes.
+Finalized API selection and implemented first successful API call.
+Added light styling to main pages.
+Bug Fixes
+Corrected redirect logic after login.
+Fixed CORS issue during early API testing.
+Performance Improvements
+Improved login query execution through indexing.
+Other Changes
+Assigned tasks for backend review system and homepage.
+Documented API details and integration steps.
