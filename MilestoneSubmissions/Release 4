@@ -1,0 +1,21 @@
+Release 4 — Version 0.0.4 → 0.0.5
+0.0.5 (2025-11-21)
+Polished UI + all tests passing + full edge-case handling
+Upgrade Steps
+None.
+Breaking Changes
+None.
+New Features
+Completed full site styling pass (layout, responsiveness, accessibility).
+Added completed profile page.
+All routes validated with error handling for unexpected API failures and invalid user input.
+Bug Fixes
+Resolved all discovered edge-case bugs from user testing.
+Fixed styling inconsistencies across pages.
+Performance Improvements
+Improved backend response times for review creation and reduced redundant DB queries via query optimization.
+Other Changes
+Updated documentation for final release.
+Completed final QA and stability checks.
+Prepared application for deployment.
+
