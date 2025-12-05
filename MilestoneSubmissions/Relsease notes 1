@@ -1,0 +1,20 @@
+Release 1 — Version 0.0.1 → 0.0.2
+0.0.2 (2025-10-31)
+Initial backend setup and database foundation
+Upgrade Steps
+[ACTION REQUIRED] Run initial database migrations.
+Install environment variables for API testing.
+Breaking Changes
+None.
+New Features
+Created initial database schema for users, movies, and reviews.
+Implemented password hashing infrastructure.
+Added placeholder frontend pages (home, login, register).
+Added basic API research and prototype calls.
+Bug Fixes
+Fixed early database pathing issue in development environment.
+Performance Improvements
+Optimized test DB configuration for faster local queries.
+Other Changes
+Set team roles for backend, API, and frontend tasks.
+Created foundational backend plan and folder structure.
