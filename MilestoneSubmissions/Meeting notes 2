@@ -1,0 +1,7 @@
+Meeting 2
+By the second meeting, the overall application outline was drafted and approved. The database and login system were confirmed fully functional. The selected movie API passed initial tests and was approved for use.
+The next action items included:
+Implementing light styling to improve UI clarity for testing.
+Beginning the backend functionality, specifically linking API calls to routes.
+Assigning tasks for backend review systems, main landing page setup, and initial API integration.
+Team members began writing endpoints for retrieving movie data and preparing the logic for connecting user actions with the database.
