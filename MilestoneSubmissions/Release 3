@@ -1,0 +1,20 @@
+Release 3 — Version 0.0.3 → 0.0.4
+0.0.4 (2025-11-14)
+Major functionality added (reviews, search, movie DB)
+Upgrade Steps
+[ACTION REQUIRED] Apply new migrations for review relations.
+Breaking Changes
+Modified movie-user relationship schema.
+New Features
+Users can now create, read, and save reviews.
+Added functionality to save movies to a user’s personal library.
+Implemented Discover page with API-powered movie search bar.
+Backend routing now fully connected to the movie API.
+Bug Fixes
+Fixed crash when API returned missing fields.
+Corrected user-session retrieval bug.
+Performance Improvements
+Reduced database queries for reviews 
+Other Changes
+Began development on user profile page.
+Started user testing to identify edge-case failures.
