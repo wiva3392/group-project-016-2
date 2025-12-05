@@ -1,0 +1,6 @@
+Meeting 3
+In the third meeting, major project functionality was completed. The website was now fully operational with core features:
+Users can create, save, and read reviews.
+Movies can be added to a user’s personal database.
+The Discover page works with a functional search bar, pulling results from the movie API.
+Next steps included building the profile page, refining user-specific features, and beginning detailed user testing to identify and resolve edge cases or unexpected behaviors.
